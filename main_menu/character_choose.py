@@ -1,4 +1,4 @@
-#import utillities as ut
+from flow import utills as ut
 
 def elsa():
     print("-- elsa --")
@@ -14,7 +14,7 @@ def bruno():
     print('-- bruno --')
     print('dia seorang anak kuat yang hobi nge-gym dan melakukan aktifitas fisik lainnya')
     print('statistik:\nhp: 90\natk: 8')
-    print('abillitiy: punya barbel raksasa yang dapat menangkis serangan monster apapun')
+    print('abillitiy: punya barbel raksasa yang dapat menangkis serangan monster apapun dengan tidak melakukan penyerangan saat ronde berlangsung')
     print()
 
 def dewa():
@@ -59,6 +59,7 @@ def marsya():
 
 
 def pilih_karakter():
+    ut.bersihkan_terminal()
     print('=== PEMILIHAN KARAKTER ===')
     print()
     print('silahkan pilih 3 dari teman kita untuk dibawa berpetualang...')
@@ -67,6 +68,20 @@ def pilih_karakter():
     dewa()
     joy()
     marsya()
+
+    try:
+        pilih = int(input('apakah lanjut?...\ny/n >>> '))
+    except ValueError:
+        print('pilih kembali ke menu dengan huruf "n", atau lanjut ke game dengan huruf "y".')
+    if pilih == 'y':
+        pass
+    elif pilih == 'n':
+        return 'kembali...'
+
+    print()
+    karakter_1 = int(input('silahkan pilih karakter pertama:\n>>>  '))
+    karakter_2 = int(input('karakter kedua:\n>>>  '))
+    karakter_2 = int(input('karakter ketiga:\n>>>  '))
     
 
 pilih_karakter()

@@ -1,7 +1,7 @@
 import os
 import time
 
-def clear_vscode_terminal():
+def bersihkan_terminal():
     """Fungsi clear yang dioptimalkan untuk VS Code"""
     if os.name == 'nt':
         os.system('cls')
