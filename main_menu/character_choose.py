@@ -39,9 +39,6 @@ def joy():
     print('joy mengambil suntikan eksperimen ayah nya secara diam-diam untuk dibawa')
     print('(ku harap joy masih hidup setelah dari petualangan dan menjelaskan pada ayahnya apa yang terjadi agar ayahnya tidak semakin gila...)')
     print('statistik:\nhp: 55\natk: 5')
-
-
-    
     print('abillitiy: joy menyuntikan zat yang membuat semua temannya di dalam petualangan mendapatkan hp tambahan sebanyak 20. (waktu tunggu 3 babak)')
     print()
 
@@ -57,6 +54,45 @@ def marsya():
     print('abillitiy: saat bersama dewa, poin serangan marsya bertambah sebanyak 6 poin,dan saat hp dewa berada di bawah 30, poin serangan marsya meningkat sebanyak 100 persen')
     print()
 
+def validasi_karakter():
+    while True:
+        try:
+            pilih = input('apakah lanjut?...\ny/n >>> ')
+    
+            if pilih == 'y':
+                pass
+            elif pilih == 'n':
+                ut.bersihkan_terminal()
+                print('kembali...')
+                break
+            else:
+                print('pilih kembali ke menu dengan huruf "n", atau "y" untuk melanjutkan game.')
+
+            print()
+            karakter_1 = input('silahkan pilih karakter pertama:\n>>>  ')
+            karakter_2 = input('karakter kedua:\n>>>  ')
+            karakter_3 = input('karakter ketiga:\n>>>  ')
+
+            if karakter_1 not in [karakter_2, karakter_3]:
+                pass
+            else:
+                raise ValueError
+        
+            if karakter_2 not in [karakter_1, karakter_3]:
+                pass
+            else:
+                raise ValueError
+        
+            if karakter_3 not in [karakter_2, karakter_1]:
+                pass
+            else:
+                raise ValueError
+        
+        except ValueError:
+            print('tidak boleh memilih nama karakter yang sama...')
+            continue
+        #except Exception:
+            #print('kesalahan tidak terduga... tolong kasih saran buat perbaikan.')
 
 def pilih_karakter():
     ut.bersihkan_terminal()
@@ -69,19 +105,4 @@ def pilih_karakter():
     joy()
     marsya()
 
-    try:
-        pilih = int(input('apakah lanjut?...\ny/n >>> '))
-    except ValueError:
-        print('pilih kembali ke menu dengan huruf "n", atau lanjut ke game dengan huruf "y".')
-    if pilih == 'y':
-        pass
-    elif pilih == 'n':
-        return 'kembali...'
-
-    print()
-    karakter_1 = int(input('silahkan pilih karakter pertama:\n>>>  '))
-    karakter_2 = int(input('karakter kedua:\n>>>  '))
-    karakter_2 = int(input('karakter ketiga:\n>>>  '))
-    
-
-pilih_karakter()
+    validasi_karakter()

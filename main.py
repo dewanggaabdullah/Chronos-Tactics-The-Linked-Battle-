@@ -5,13 +5,13 @@ def game_loop():
     while True:
         print('==={ CRONOS TACTICS: The Linked Battle }===')
         print()
-        print("         ╔══════════════════╗")
-        print("         ║   GAME MENU      ║")
-        print("         ╠══════════════════╣")
-        print("         ║ 1. Mulai         ║")
-        print("         ║ 2. Options       ║")
-        print("         ║ 3. Keluar        ║")
-        print("         ╚══════════════════╝")
+        print("          ╔══════════════════╗")
+        print("          ║   GAME MENU      ║")
+        print("          ╠══════════════════╣")
+        print("          ║ 1. Mulai         ║")
+        print("          ║ 2. Options       ║")
+        print("          ║ 3. Keluar        ║")
+        print("          ╚══════════════════╝")
 
         print('\npilih angka pada nomor diatas sebagai input...')
         pilih = input("Pilih (1-3): ")
@@ -21,7 +21,7 @@ def game_loop():
             print("Game dimulai!")
             print("Selamat bermain...")
             cc.pilih_karakter()
-            input("\nTekan Enter saja buat kembali ke menu")
+            input("\nTekan Enter saja buat kembali ke menu ")
             
         elif pilih == '2':
             #ini gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan
@@ -36,4 +36,5 @@ def game_loop():
             print("Bye bye!\n")
             break
 
+ut.bersihkan_terminal()
 game_loop()
