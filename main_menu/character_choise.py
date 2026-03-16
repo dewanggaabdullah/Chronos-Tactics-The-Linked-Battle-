@@ -43,10 +43,10 @@ def joy():
     print()
 
 def marsya():
-    print('-- marsya ackerman --')
-    print('marsya seorang anak yatim piatu yang dulunya terlantar di alun-alun kota.')
+    print('-- mikasa --')
+    print('mikasa seorang anak yatim piatu yang dulunya terlantar di alun-alun kota.')
     print('keluarga dewa mengadopsinya dan menganggapnya sebagai anak sendiri dan jadi saudara angkat bagi dewa.')
-    print('tidak tau kenapa, tapi marsya sangat kuat dan lincah saat bertengkar dengan bruno dan hampir mengalahkannya demi dewa saat dewa berselisih dengan bruno dulu.')
+    print('tidak tau kenapa, tapi mikasa sangat kuat dan lincah saat bertengkar dengan bruno dan hampir mengalahkannya demi dewa saat dewa berselisih dengan bruno dulu.')
     print('padahal dia tidak pernah latihan fisik sangat keras seperti bruno')
     print('statistik:')
     print('hp: 45')

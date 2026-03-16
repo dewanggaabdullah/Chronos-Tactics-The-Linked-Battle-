@@ -1,4 +1,4 @@
-from main_menu import character_choose as cc
+from main_menu import character_choise as cc
 from flow import utills as ut
 
 def game_loop():

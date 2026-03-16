@@ -36,4 +36,11 @@ def intro_cerita():
     time.sleep(0.5)
     print_story("Pintu terbuka dengan kerasnya!", 'normal')
 
-intro_cerita()
+#intro_cerita()
+
+
+# kode buat elsa 
+# Di dalam loop heal_team:
+anggota.hp += self.ability
+if anggota.hp > anggota.max_hp:
+    anggota.hp = anggota.max_hp
