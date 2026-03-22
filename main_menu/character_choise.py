@@ -10,6 +10,7 @@ def elsa():
     print("atk: 5")
     print("abilitiy: dapat menambah hp rekan tiap ronde sebanyak 3")
     print()
+    ut.time.sleep(0,5)
 
 def bruno():
     print('-- bruno --')

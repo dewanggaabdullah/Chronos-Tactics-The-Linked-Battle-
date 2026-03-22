@@ -33,18 +33,16 @@ class Bruno(Dasar_Karakter):
     def tangkis():
         print(f'bruno menggunakan barbelnya, menangkis serangan monster dengan mudah...!')
 
-
-
-
 class Monster(Dasar_Karakter):
     def __init__(self, hp, nama):
         super().__init__(hp, nama)
         self.daftar_atk = [40,15,17,13]
        
     def serang(self, target):
-        serangan_sekarang = random.choise(self.daftar_atk)
-        target.hp -= serangan_sekarang
-
-        print(f'{self.nama} menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk target')
-
+        if self.hp > 0:
+            serangan_sekarang = random.choice(self.daftar_atk)
+            target.hp -= serangan_sekarang
+            print(f'sekarang {self.nama} mulai menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk target')
+        else:
+            print(f'{self.nama} sudah kalah dan tidak bisa menyerang.')
 
