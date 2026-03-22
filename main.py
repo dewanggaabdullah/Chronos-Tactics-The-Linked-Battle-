@@ -14,7 +14,10 @@ def game_loop():
         print("          ╚══════════════════╝")
 
         print('\npilih angka pada nomor diatas sebagai input...')
-        pilih = input("Pilih (1-3): ")
+        pilih = 0 #input("Pilih (1-3): ")
+        
+        cc.pilih_karakter()
+        break
         
         if pilih == '1':
             ut.bersihkan_terminal()

@@ -1,5 +1,5 @@
 from flow import utills as ut
-from flow import engine as e
+from flow import engine as en
 
 def elsa():
     print("-- elsa --")
@@ -8,9 +8,9 @@ def elsa():
     print("statistik:")
     print("hp: 75")
     print("atk: 5")
-    print("abilitiy: dapat menambah hp rekan tiap ronde sebanyak 3")
+    print("abilitiy: dapat menambah hp rekan tiap ronde sebanyak 7")
     print()
-    ut.time.sleep(0,5)
+    ut.time.sleep(3)
 
 def bruno():
     print('-- bruno --')
@@ -20,6 +20,7 @@ def bruno():
     print('atk: 12')
     print('abillitiy: punya barbel raksasa yang dapat menangkis serangan monster apapun dengan tidak melakukan penyerangan saat ronde berlangsung')
     print()
+    ut.time.sleep(3)
 
 def dewa():
     print("-- dewa --")
@@ -35,6 +36,7 @@ def dewa():
     print("jaga-jaga (marsya suka dengan dewa jir...hahaha),dewa membawa banyak drone")
     print("kamikaze untuk berpetualang ke antah-brantah yang jauh disana")
     print()
+    ut.time.sleep(3)
 
 def joy():
     print('-- joy --')
@@ -47,6 +49,7 @@ def joy():
     print('atk: 10')
     print('abillitiy: joy menyuntikan zat yang membuat semua temannya di dalam petualangan mendapatkan hp tambahan sebanyak 20. (waktu tunggu 3 babak)')
     print()
+    ut.time.sleep(3)
 
 def marsya():
     print('-- mikasa --')
@@ -59,25 +62,27 @@ def marsya():
     print('atk: 10')
     print('abillitiy: saat bersama dewa, poin serangan marsya bertambah sebanyak 10 poin,dan saat hp dewa berada di bawah 30, seluruh poin serangan marsya meningkat sebanyak 100 persen')
     print()
+    ut.time.sleep(1.5)
 
 def validasi_karakter():
+    from main import game_loop
+
     while True:
         try:
-            pilih = input('apakah lanjut?...\ny/n >>> ')
+            tanya = input('apakah lanjut?...\ny/n >>> ')
     
-            if pilih == 'y':
-                pass
-            elif pilih == 'n':
+            if tanya == 'y':
+                print()
+                karakter_1 = input('silahkan pilih karakter pertama:\n>>>  ')
+                karakter_2 = input('karakter kedua:\n>>>  ')
+                karakter_3 = input('karakter ketiga:\n>>>  ')
+            elif tanya == 'n':
                 ut.bersihkan_terminal()
                 print('kembali...')
-                break
+                game_loop()
+                continue
             else:
                 print('pilih kembali ke menu dengan huruf "n", atau "y" untuk melanjutkan game.')
-
-            print()
-            karakter_1 = input('silahkan pilih karakter pertama:\n>>>  ')
-            karakter_2 = input('karakter kedua:\n>>>  ')
-            karakter_3 = input('karakter ketiga:\n>>>  ')
 
             if karakter_1 not in [karakter_2, karakter_3]:
                 pass
@@ -94,9 +99,9 @@ def validasi_karakter():
             else:
                 raise ValueError
             
-            e.logika_pemilihan_karakter(karakter_1, karakter_2, karakter_3)
+            en.logika_pemilihan_karakter(karakter_1, karakter_2, karakter_3)
         
-        except ValueError:
+        except NameError:
             print('tidak boleh memilih nama karakter yang sama...')
             continue
         #except Exception:
