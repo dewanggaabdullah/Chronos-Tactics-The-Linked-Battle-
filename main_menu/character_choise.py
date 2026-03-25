@@ -35,6 +35,7 @@ def dewa():
     print("karna marsya menyuruhnya membawa peralatan siaga untuk")
     print("jaga-jaga (marsya suka dengan dewa jir...hahaha),dewa membawa banyak drone")
     print("kamikaze untuk berpetualang ke antah-brantah yang jauh disana")
+    print('(pasif damage dasar tertinggi dalam tim)')
     print()
     ut.time.sleep(3)
 
@@ -47,11 +48,11 @@ def joy():
     print('statistik:')
     print('hp: 90')
     print('atk: 10')
-    print('abillitiy: joy menyuntikan zat yang membuat semua temannya di dalam petualangan mendapatkan hp tambahan sebanyak 20. (waktu tunggu 3 babak)')
+    print("abillitiy: joy menyuntikan zat yang membuat semua temannya di dalam petualangan mendapatkan hp tambahan sebanyak 20. (waktu tunggu 3 babak)")
     print()
     ut.time.sleep(3)
 
-def marsya():
+def mikasa():
     print('-- mikasa --')
     print('mikasa seorang anak yatim piatu yang dulunya terlantar di alun-alun kota.')
     print('keluarga dewa mengadopsinya dan menganggapnya sebagai anak sendiri dan jadi saudara angkat bagi dewa.')
@@ -60,7 +61,7 @@ def marsya():
     print('statistik:')
     print('hp: 100')
     print('atk: 10')
-    print('abillitiy: saat bersama dewa, poin serangan marsya bertambah sebanyak 10 poin,dan saat hp dewa berada di bawah 30, seluruh poin serangan marsya meningkat sebanyak 100 persen')
+    print('abillitiy: saat bersama dewa, poin serangan mikasa bertambah sebanyak 10 poin,dan saat hp dewa berada di bawah 30, seluruh poin serangan marsya meningkat sebanyak 100 persen')
     print()
     ut.time.sleep(1.5)
 
@@ -116,6 +117,6 @@ def pilih_karakter():
     bruno()
     dewa()
     joy()
-    marsya()
+    mikasa()
 
     validasi_karakter()

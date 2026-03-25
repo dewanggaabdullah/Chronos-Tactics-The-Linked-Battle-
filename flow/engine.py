@@ -25,8 +25,8 @@ def ronde_pertarungan(tim_pemain, monster):
         print(f"Monster balas menyerang {target.nama}! HP {target.nama} sisa: {target.hp}")
 
 # CONTOH MENJALANKANNYA:
-my_team = logika_pemilihan_karakter('elsa', 'dewa', 'mikasa')
-monster_bos = {'nama': 'Giant Slime', 'hp': 200, 'atk': 20}
-battle_round(my_team, monster_bos)
+#team = logika_pemilihan_karakter('elsa', 'dewa', 'mikasa')
+#monster_bos = {'nama': 'Giant Slime', 'hp': 200, 'atk': 20}
+#battle_round(team, monster)
 
     
