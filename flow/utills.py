@@ -1,5 +1,6 @@
 import os
 import time
+from pynput import keyboard
 
 def bersihkan_terminal():
     """Fungsi clear yang dioptimalkan untuk VS Code"""
@@ -9,8 +10,17 @@ def bersihkan_terminal():
         os.system('clear')
 
 def print_story(text, speed='normal'):
-    """Print teks dengan kecepatan berbeda"""
-    
+    # variabel sama fungsi yang nanti bisa bikin story ke skip untuk mempercepat debugging
+    # atau waktu user ke isi permainan
+    skip = False
+
+    def skip_story(key):
+        nonlocal skip
+        if skip == keyboard.Key.space:
+            skip = True
+            return False
+
+    # Print teks dengan kecepatan berbeda
     # Set kecepatan
     speeds = {
         'lambat': 0.1,
@@ -23,5 +33,7 @@ def print_story(text, speed='normal'):
     
     for char in text:
         print(char, end='', flush=True)
-        time.sleep(delay)
+        if skip == False:
+            time.sleep(delay)
     print()
+
