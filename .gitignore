@@ -1,4 +1,10 @@
+# cache proyek
 __pycache__/
 main_menu/__pycache__
 flow/__pycache__
+
+# buat virtual environment
 venv/
+
+#folder vs code
+.vscode/

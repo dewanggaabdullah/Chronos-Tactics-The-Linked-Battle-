@@ -2,6 +2,7 @@ from main_menu import character_choise as cc
 from flow import utills as ut
 
 def main_menu():
+    ut.bersihkan_terminal()
     while True:
         print('==={ CRONOS TACTICS: The Linked Battle }===')
         print()
@@ -22,7 +23,7 @@ def main_menu():
                 ut.bersihkan_terminal()
                 print("Game dimulai!")
                 print("Selamat bermain...")
-                cc.pilih_karakter()
+                cc.game_dimulai()
                 
             
             elif pilih == '2':
