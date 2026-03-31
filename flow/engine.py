@@ -1,32 +1,29 @@
 from flow import units as un
+from flow import character_choise as cc
+from flow import utills as ut
 
-def logika_pemilihan_karakter(k1, k2, k3):
-    karakter_valid = ['elsa', 'bruno', 'dewa', 'joy', 'mikasa']
-    tim_pemain = []
-    for karakter in [k1.lower, k2.lower, k3.lower]:
-        if karakter in karakter_valid:
-            data = attribute_karakter[karakter]
-            objek_karakter = Karakter(nama = karakter, hp = data['hp'], attack=data['atk'])
-            tim_pemain.append(objek_karakter)
-    return tim_pemain
+def jalankan_game():
+    pengenalan_char = cc.cerita_karakter
+    pilihan_karakter = cc.validasi_karakter()
 
-def ronde_pertarungan(tim_pemain, monster):
-    print(f"\n--- RONDE DIMULAI: Melawan {monster['nama']} ---")
-    
-    for hero in tim_pemain:
-        if monster['hp'] > 0:
-            monster['hp'] -= hero.attack
-            print(f"{hero.nama.capitalize()} menyerang! Damage: {hero.attack}. HP Monster: {max(0, monster['hp'])}")
-    
-    # Jika monster masih hidup, dia balas menyerang salah satu (misal yang pertama)
-    if monster['hp'] > 0:
-        target = tim_pemain[0] # Monster nyerang karakter pertama
-        target.hp -= monster['atk']
-        print(f"Monster balas menyerang {target.nama}! HP {target.nama} sisa: {target.hp}")
+    print(pengenalan_char)
+    print(pilihan_karakter)
 
-# CONTOH MENJALANKANNYA:
-#team = logika_pemilihan_karakter('elsa', 'dewa', 'mikasa')
-#monster_bos = {'nama': 'Giant Slime', 'hp': 200, 'atk': 20}
-#battle_round(team, monster)
+    while True:
+        for hero in pilihan_karakter.values():
+            hero.hp = hero.max_hp
 
-    
+    print('\n' + '='*30)
+    print('PERTARUNGAN DIMULAI')
+    print('='*30)
+
+    print('pilih siapa yang akan menyerang o=|:::>')
+
+
+def game_dimulai():
+    ut.bersihkan_terminal()
+    print('=== PEMILIHAN KARAKTER ===')
+    print('silahkan pilih 3 dari teman kita untuk dibawa berpetualang...')
+    print()
+    jalankan_game()
+

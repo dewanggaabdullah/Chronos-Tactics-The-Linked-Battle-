@@ -1,4 +1,4 @@
-from main_menu import character_choise as cc
+from flow import engine as en
 from flow import utills as ut
 
 def main_menu():
@@ -23,7 +23,7 @@ def main_menu():
                 ut.bersihkan_terminal()
                 print("Game dimulai!")
                 print("Selamat bermain...")
-                cc.game_dimulai()
+                en.game_dimulai()
                 
             
             elif pilih == '2':
@@ -43,8 +43,8 @@ def main_menu():
                 raise ValueError
         except ValueError:
             print('harap masukkan nomor menu yang benar...')
-        except Exception as e:
-            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')
+        """except Exception as e:
+            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')"""
 
         try:
             input("\n<< Tekan Enter saja buat kembali ke menu >> ")

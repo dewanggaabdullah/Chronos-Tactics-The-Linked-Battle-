@@ -53,7 +53,7 @@ class Dewa(Dasar_Karakter):
         super().__init__(nama, hp, atk)
 
 class Joy(Dasar_Karakter):
-    def __init__(nama, hp, atk):
+    def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
         self.suntik_daya_tahan = 20
         self.waktu_tunggu = 0
@@ -101,3 +101,24 @@ class Monster(Dasar_Karakter):
         else:
             print(f'{self.nama} sudah kalah dan tidak bisa menyerang.')
 
+# setelah permainan berakhir, pakai fungsi ini buat riset
+def reset_entitas():
+    for hero in pilihan_karakter.values():
+        hero.hp = hero.max_hp
+
+    monster_obj.hp = monster_obj.max_hp
+
+# menginisialisasi nama karakter
+elsa = Elsa('Elsa', 75, 5)
+bruno = Bruno('Bruno', 150, 15)
+dewa = Dewa('Dewa', 85, 15)
+joy = Joy('Joy', 90, 10)
+mikasa = Mikasa('Mikasa', 90, 10)
+
+pilihan_karakter = {
+    'elsa': elsa,
+    'bruno': bruno,
+    'dewa': dewa,
+    'joy': joy,
+    'mikasa': mikasa
+}
