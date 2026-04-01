@@ -1,23 +1,18 @@
 from flow import units as un
-from flow import character_choise as cc
-from flow import utills as ut
+from flow import character_choice as cc
+from flow import utils as ut
+
+def inisialisasi_karakter():
+    cc.cerita_karakter()
+    karakter = cc.validasi_karakter()
+
+    if karakter in un.pilihan_karakter:
+        tim_pemain = un.pilihan_karakter[karakter]
+    else:
+        print('karakter tidak ditemukan')
 
 def jalankan_game():
-    pengenalan_char = cc.cerita_karakter
-    pilihan_karakter = cc.validasi_karakter()
-
-    print(pengenalan_char)
-    print(pilihan_karakter)
-
-    while True:
-        for hero in pilihan_karakter.values():
-            hero.hp = hero.max_hp
-
-    print('\n' + '='*30)
-    print('PERTARUNGAN DIMULAI')
-    print('='*30)
-
-    print('pilih siapa yang akan menyerang o=|:::>')
+    pass
 
 
 def game_dimulai():

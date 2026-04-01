@@ -1,4 +1,4 @@
-from flow import utills as ut
+from flow import utils as ut
 
 def cerita_karakter():
     deskripsi_elsa = "-- elsa --\nelsa merupakan seorang gadis manis yang suka membantu teman-temannya dan bercita cita menjadi dokter yang manis pula.\nstatistik:\nhp: 75\natk: 5\nkemampuan:  dapat menambah hp rekan tiap ronde sebanyak 7"
@@ -38,7 +38,7 @@ def validasi_karakter():
 
     while True:
         try:
-            tanya = input('apakah lanjut?...(jangan ada spasi didalam input)\ny/n >>> ')
+            tanya = input('apakah lanjut?...(jangan ada spasi dalam input)\ny/n >>> ')
     
             if tanya == 'y':
                 print()
