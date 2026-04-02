@@ -1,3 +1,6 @@
+# modul error handling
+import traceback
+
 from flow import engine as en
 from flow import utils as ut
 
@@ -41,9 +44,12 @@ def main_menu():
 
             else:
                 raise ValueError
-        except ValueError:
-            print('harap masukkan nomor menu yang benar...')
-        """except Exception as e:
+
+        except NameError:
+            traceback.print_exc()
+        """except ValueError:
+            print('harap masukkan nomor menu yang benar...')   
+        except Exception as e:
             print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')"""
 
         try:

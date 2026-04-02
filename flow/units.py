@@ -21,7 +21,6 @@ class Dasar_Karakter:
 
         return pesan, True
         
-
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__ (nama, hp, atk)
@@ -115,7 +114,7 @@ dewa = Dewa('Dewa', 85, 15)
 joy = Joy('Joy', 90, 10)
 mikasa = Mikasa('Mikasa', 90, 10)
 
-pilihan_karakter = {
+attribute_karakter = {
     'elsa': elsa,
     'bruno': bruno,
     'dewa': dewa,
