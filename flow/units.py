@@ -89,7 +89,7 @@ class Mikasa(Dasar_Karakter):
 
 class Monster(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
-        super().__init__(hp, nama, atk)
+        super().__init__(nama, hp, atk)
         self.daftar_atk = [40,15,17,13]
        
     def serang(self, target):

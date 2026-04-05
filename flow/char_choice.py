@@ -2,19 +2,12 @@ from flow import utils as ut
 from flow import units as un
 
 def pemilihan_karakter(k1, k2, k3):
-    karakter_valid = ['elsa', 'bruno', 'dewa', 'joy', 'mikasa']
     tim_pemain = {}
     for nama_input in [k1.lower(), k2.lower(), k3.lower()]:
-        if nama_input in karakter_valid:
-            data = un.attribute_karakter[nama_input]
+        if nama_input in un.attribute_karakter:
+            attribute_karakter = un.attribute_karakter[nama_input]
 
-            objek_karakter = Karakter(
-                nama = nama_input,
-                hp = data['hp'],
-                atk = data['atk']
-            )
-            
-            tim_pemain[nama_input] = objek_karakter
+            tim_pemain[nama_input] = attribute_karakter
 
     return tim_pemain
 
@@ -24,7 +17,7 @@ def validasi_karakter():
 
     while True:
         try:
-            tanya = input('apakah tetap lanjut ke permainan?...\ny/n >>> ').strip()
+            tanya = input('apakah tetap lanjut ke permainan?...\ny/n >>> ').strip().lower()
     
             if tanya == 'y':
                 print()
