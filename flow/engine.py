@@ -81,10 +81,5 @@ def inisialisasi_karakter():
 
     jalankan_game(tim_pemain, monster)
     
-def game_dimulai():
-    ut.bersihkan_terminal()
-    print('=== PEMILIHAN KARAKTER ===')
-    print('silahkan pilih 3 dari teman kita untuk dibawa berpetualang...')
-    print()
-    inisialisasi_karakter()
+
 

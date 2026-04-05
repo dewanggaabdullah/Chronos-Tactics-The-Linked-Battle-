@@ -13,35 +13,49 @@ def main_menu():
         print("           ║   GAME MENU      ║")
         print("           ╠══════════════════╣")
         print("           ║ 1. Mulai         ║")
-        print("           ║ 2. Options       ║")
+        print("           ║ 2. Settings      ║")
         print("           ║ 3. Keluar        ║")
         print("           ╚══════════════════╝")
 
         print('\npilih angka pada nomor diatas sebagai input...')
-        
+
+        def game_dimulai():
+            prolog1 = 'game_dimulai...'
+            prolog2 = 'selamat bermain'
+            prolog_karakter = st.prolog_karakter
+            st.prolog_karakter(prolog1)
+            st.prolog_karakter(prolog2)
+            st.prolog_karakter(prolog_karakter)
+
+            ut.bersihkan_terminal()
+            print('=== PEMILIHAN KARAKTER ===')
+            print('silahkan pilih 3 dari teman kita untuk dibawa berpetualang...')
+            print()
+
+            inisialisasi_karakter()
+
+        def settings():
+        #ini gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan
+            ut.bersihkan_terminal()
+            print("=== SETTINGS ===")
+            print("1. Difficulty: indonesia")
+            print("2. Sound: Off")
+
         try:
             pilih = input("Pilih (1-3): ")
+
+            pilihan_user = {
+                '1': game_dimulai,
+                '2': settings
+            }
         
-            if pilih == '1':
-                ut.bersihkan_terminal()
-                print("Game dimulai!")
-                print("Selamat bermain...")
-                en.game_dimulai()
-                
-            
-            elif pilih == '2':
-                #ini gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan
-                ut.bersihkan_terminal()
-                print("=== SETTINGS ===")
-                print("1. Difficulty: indonesia")
-                print("2. Sound: Off")
-                input("\nTekan Enter untuk kembali ke menu: ")
-            
+            if pilih in pilihan_user:
+                eksekusi = pilihan_user[pilih]  # Ambil 'alamat' fungsi
+                eksekusi()                      # DI SINI KASIH PARAMETER/KURUNG.lower()
             elif pilih == '3':
                 ut.bersihkan_terminal()
                 print("Bye bye!\n")
                 break
-
             else:
                 raise ValueError
 

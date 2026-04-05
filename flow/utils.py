@@ -12,17 +12,16 @@ def bersihkan_terminal():
     else:
         os.system('clear')
 
+# variabel sama fungsi yang nanti bisa bikin story ke skip untuk mempercepat debugging
+# atau waktu user ke isi permainan
+# nanti si 'skip' ini yang jadi sakelar buat delay outputnya
 def print_story(text, speed='normal'):
-    # variabel sama fungsi yang nanti bisa bikin story ke skip untuk mempercepat debugging
-    # atau waktu user ke isi permainan
-    # nanti si 'skip' ini yang jadi sakelar buat delay outputnya
     skip = False
-
+    """
+    nonlocal dipakai buat ambil variabel dari fungsi induk,
+    jadi konsepnya mirip sama inheritance(pewarisan) class
+    """
     def skip_story(Key):
-        """
-            nonlocal dipakai buat ambil variabel dari fungsi induk, 
-        jadi konsepnya mirip sama inheritance(pewarisan) class
-        """
         nonlocal skip
         if Key == keyboard.Key.space:
             skip = True
@@ -38,6 +37,7 @@ def print_story(text, speed='normal'):
 
     # Print teks dengan kecepatan berbeda
     # Set kecepatan
+
     speeds = {
         'lambat': 0.1,
         'normal': 0.05,
@@ -53,6 +53,7 @@ def print_story(text, speed='normal'):
             time.sleep(delay)
 
     # print di pakai untuk bikin spasi setelah for di laksanakan.
+
     print()
 
     # kalau gunanya .stop() buat berhentiin listener mantau input sesudah loop selesai kasih output
