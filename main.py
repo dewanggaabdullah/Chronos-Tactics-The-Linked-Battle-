@@ -3,6 +3,8 @@ import traceback
         
 from flow import engine as en
 from flow import utils as ut
+from flow import story as st
+from flow import char_choice as cc
 
 def main_menu():
     ut.bersihkan_terminal()
@@ -20,19 +22,8 @@ def main_menu():
         print('\npilih angka pada nomor diatas sebagai input...')
 
         def game_dimulai():
-            prolog1 = 'game_dimulai...'
-            prolog2 = 'selamat bermain'
-            prolog_karakter = st.prolog_karakter
-            st.prolog_karakter(prolog1)
-            st.prolog_karakter(prolog2)
-            st.prolog_karakter(prolog_karakter)
-
-            ut.bersihkan_terminal()
-            print('=== PEMILIHAN KARAKTER ===')
-            print('silahkan pilih 3 dari teman kita untuk dibawa berpetualang...')
-            print()
-
-            inisialisasi_karakter()
+            st.prolog()
+            en.inisialisasi_karakter()
 
         def settings():
         #ini gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan

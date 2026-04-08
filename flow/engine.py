@@ -7,7 +7,6 @@ from flow import story as st
 def inisialisasi_karakter():
     global tim_pemain, monster
 
-    st.cerita_karakter()
     daftar_karakter = cc.validasi_karakter()
 
     tim_pemain = cc.pemilihan_karakter(*daftar_karakter)
@@ -34,10 +33,22 @@ def inisialisasi_karakter():
                 # kasih tau kalau ada karakter mati nanti ada "-" di hp nya
                 status = f'{p.hp} HP' if p.hp > 0 else '-'
                 print()
-                print(      f'{p.nama.upper()}: {status}')
-                print(      f'{monster.nama.upper()}: {monster.hp} HP')
-                print()
-                print('_' *40)
+                print("           ╔══════════════════════════════════════════════════╗")
+                print("           ║                   STATUS_UNIT                    ║")
+                print("           ╠══════════════════════════════════════════════════╣")
+                print("           ║ TIM:                                             ║")
+                print("           ║                                                  ║")
+                print("           ║ 1. f'{p.nama.upper()}: {status}')                ║")
+                print("           ║ 2. f'{p.nama.upper()}: {status}')                ║")
+                print("           ║ 3. f'{p.nama.upper()}: {status}')                ║")
+                print("           ║                                                  ║")
+                print("           ╠══════════════════════════════════════════════════╣")
+                print("           ║ MUSUH:                                           ║")
+                print("           ║                                                  ║")
+                print("           ║ 1. f'{monster.nama.upper()}: {monster.hp} HP')   ║")
+                print("           ║                                                  ║")
+                print("           ║                                                  ║")
+                print("           ╚══════════════════════════════════════════════════╝")
 
             # pilihan aksi yang dapat dipilih pemain
             aksi = input('\n[i] Pilih nama karakter untuk menyerang atau ketik "kabur" buat melarikan diri\n>>>  ').lower().strip()
@@ -46,6 +57,7 @@ def inisialisasi_karakter():
                 print('[lol] kalian melarikan diri...!, monster itu terlalu kuat dan kalian ternyata hanya seekor anak ayam di mata seorang monster perkasa...(wkwk)\n<<< GAME OVER >>>')
                 break
 
+            # kalau pemain menyerang monster
             if aksi in tim_pemain:
                 ut.bersihkan_terminal()
                 penyerang = tim_pemain[aksi]
@@ -54,6 +66,7 @@ def inisialisasi_karakter():
                     print(f'\n~ [!] {penyerang.nama} sudah tidak berdaya, pilih teman yang lain!')
                     continue
 
+            # monster otomatis membalas menyerang
                 penyerang.menyerang(monster)
                 print(f"\n[x] {penyerang.nama} menyerang! memberikan damage sebesar {penyerang.atk}.")
 
@@ -64,6 +77,7 @@ def inisialisasi_karakter():
                 balasan_monster = monster.menyerang(penyerang)
                 print(f"\n[x] {monster.nama} murka dan menyerang balik {penyerang.nama}, memberikan damage sebesar {monster.atk}")
 
+            # kalau tim pemain ada yang hpnya setara/di bawah 0
                 if penyerang.hp <= 0:
                     print()
                     print(f'[!] {penyerang.nama} tidak sanggup melanjutkan pertempuran... terus berjuang..!!!')
