@@ -9,7 +9,8 @@ class Dasar_Karakter:
 
     def menyerang(self, target):
         damage = self.atk
-        return target.menerima_serangan(damage)
+        target.menerima_serangan(damage)
+        return f"\n[x] {penyerang.nama} menyerang! memberikan damage sebesar {penyerang.atk}."
 
     def menerima_serangan(self, damage):
         self.hp -= damage
@@ -20,13 +21,22 @@ class Dasar_Karakter:
             return kalah, False
 
         return pesan, True
-        
+
+    def ambil_tindakan():
+        aksi = getattr(attribute_karakter, 'gunakan_skill', None)
+        if aksi and callable(aksi):
+            print('skill aktif')
+        else:
+            print('skill pasif')
+
+
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__ (nama, hp, atk)
         self.healing = 7
 
-    def pasif_healer(self, daftar_tim):
+    # skil pasif
+    def skill_pasif():
         for anggota in daftar_tim.values():
             if anggota.hp > 0:
                 anggota.hp += self.healing
@@ -39,7 +49,8 @@ class Bruno(Dasar_Karakter):
         super().__init__(nama, hp, atk)
         self.tangkis = False
 
-    def menangkis_serangan(self, damage):
+    # skill aktif(liat huruf)
+    def gunakan_skill(self, damage):
         if self.tangkis:
             self.tangkis = False
             pesan = f"{self.nama} menggunakan barbel super nya..!!! Tidak ada serangan monster yang terasa."
@@ -57,7 +68,7 @@ class Joy(Dasar_Karakter):
         self.suntik_daya_tahan = 20
         self.waktu_tunggu = 0
 
-    def tambah_darah(self):
+    def gunakan_skill(self):
         if self.waktu_tunggu == 0:
             self.waktu_tunggu = 3
 
@@ -75,15 +86,33 @@ class Mikasa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super(). __init__(nama, hp, atk)
         self.bonus_serangan = 10
+        self.mode_ngamuk = False
 
-    def bersama_dewa(self, dewa):
-        damage_total = self.atk + self.bonus_serangan
+    def skill_pasif(self, daftar_tim):
+        # siapin variabel dewa buat loop, kalau dewa gak jumpa
+        # dewa tetap none(gak ada)
+        dewa = None
 
-        if dewa.hp < 30:
-            damage_total = damage_total * 2
-            print(f'MIKASA MENGAMUK...! HP {dewa.nama} kritis, damage {self.nama} meningkat pesat')
+        for char in daftar_tim:
+            if char.nama == 'Dewa':
+                dewa = char # karna dewa jumpa, jadi diganti
+                break
 
-        return damage_total
+        if dewa:
+            # kalau dewa ada, mikasa dapat bonus serangan
+            if not hasattr(self, self.mode_ngamuk):
+                self.atk += self.bonus_serangan
+                self.bonus_dewa = True
+
+            if dewa.hp < 30 and not self.mode_ngamuk:
+                self.atk *= 2 # meningkat 100 persen
+                self.mode_ngamuk = True
+                print(f"!!! MIKASA MENGAMUK !!! HP {dewa.nama} kritis!")
+
+            if dewa.hp > 30 and self.mode_ngamuk:
+                self.atk /= 2 # kembali ke normal, cuman bonus bersama dewa yang masih valid 
+                self.mode_ngamuk = False
+
 
 #monster
 
@@ -91,13 +120,23 @@ class Monster(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
         self.daftar_atk = [40,15,17,13]
+        self.index_serangan = 0 # pengarah berasan damage yang diberikan monster
        
     def serang(self, target):
         if self.hp > 0:
-            serangan_sekarang = self.daftar_atk
+            # serangan yang mau di kasih monster di arahin pakai index_serangan
+            serangan_sekarang = self.daftar_atk[self.index_serangan]
+
             target.hp -= serangan_sekarang
-            print(f'sekarang {self.nama} mulai menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk target')
-        else:
+            print(f'sekarang {self.nama} balas menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk [kurung kurawal penyerang.hp]')        
+
+            # index di tambah buat nuntun monster lanjut ke serangan berikutnya
+            self.index_serangan += 1
+
+            if self.index_serangan >= len(daftar_atk):
+                self.index_serangan = 0
+
+        else:            
             print(f'{self.nama} sudah kalah dan tidak bisa menyerang.')
 
 # setelah permainan berakhir, pakai fungsi ini buat riset

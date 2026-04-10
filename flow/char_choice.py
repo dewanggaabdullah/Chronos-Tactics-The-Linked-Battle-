@@ -36,7 +36,7 @@ def validasi_karakter():
             
             elif tanya == 'n':
                 ut.bersihkan_terminal()
-                return 'kembali...'
+                return 'kembali...',False
             
             else:
                 print('pilih kembali ke menu dengan huruf "n", atau "y" untuk melanjutkan game.')
