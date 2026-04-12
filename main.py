@@ -52,10 +52,10 @@ def main_menu():
 
         except NameError:
             traceback.print_exc()
-        """except ValueError:
+        except ValueError:
             print('harap masukkan nomor menu yang benar...')   
         except Exception as e:
-            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')"""
+            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')
 
         try:
             input("\n<< Tekan Enter saja buat kembali ke menu >> ")

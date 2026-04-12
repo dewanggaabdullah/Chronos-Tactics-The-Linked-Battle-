@@ -1,5 +1,7 @@
-#karakter
+import traceback
+import utils as ut
 
+#karakter
 class Dasar_Karakter:
     def __init__(self, nama, hp, atk):
         self.nama = nama
@@ -10,7 +12,7 @@ class Dasar_Karakter:
     def menyerang(self, target):
         damage = self.atk
         target.menerima_serangan(damage)
-        return f"\n[x] {penyerang.nama} menyerang! memberikan damage sebesar {penyerang.atk}."
+        return f"\n[x] {self.nama} menyerang! memberikan damage sebesar {damage}."
 
     def menerima_serangan(self, damage):
         self.hp -= damage
@@ -22,45 +24,103 @@ class Dasar_Karakter:
 
         return pesan, True
 
-    def ambil_tindakan():
-        aksi = getattr(attribute_karakter, 'gunakan_skill', None)
+    def ambil_tindakan(self, target):
+        # cek apakah karakter punya skill aktif atau tidak
+        aksi = getattr(self, 'gunakan_skill', None)
+
         if aksi and callable(aksi):
-            print('skill aktif')
-        else:
-            print('skill pasif')
+            # disini kalau skill aktif cooldown, dan pemain masih panggil,
+            # maka monster gak nyerang dulu dan loop disini 
+            while True:
+                print(f'\n--- giliran {self.nama} ---')
+                print('1.menyerang')
+                print('2.gunakan skill')
+
+                try:
+                    pilih = input('pilih nomor pada opsi,buat strategimu..!\n>>> ')
+
+                    if pilih == '1':
+                        # kalau serangannya pasif, langsung menyerang musuh
+                        # langsung lolos fungsi...
+                        return False
+
+                    elif pilih == '2':
+                        # disini kirim target buat karakter dan objek tim_pemain
+                        # sekaligus sebagai paket agar lebih scalable buat banyak 
+                        # karakteristik skill karakter
+                        status_skill = aksi(target=target, tim_pemain=tim_pemain)
+
+                        if status_skill True:
+                            return True # kita tandai kalo skill udah aktif dan dipakai
+                        else:
+                            # skill lagi cooldown, jadi putaran gak valid dan ulang dari awal
+                            # agar pemain gak rugi giliran
+                            continue
+                    else:
+                        # buat tutup celah kalau user bertingkah
+                        raise ValueError
+
+            except ValueError:
+                print('harap masukkan input berupa angka pada opsi pilihan yang ada')
+            except Exception as e:
+                print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')
+
+        return False
 
 
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__ (nama, hp, atk)
+        self.heal_max = hp
         self.healing = 7
 
     # skil pasif
-    def skill_pasif():
-        for anggota in daftar_tim.values():
-            if anggota.hp > 0:
-                anggota.hp += self.healing
-                if anggota.hp > anggota.maks_hp:
-                    anggota.hp = anggota.maks_hp
-        print(f'{self.nama} mengobati hp tim sebanyak {self.healing} \nhp setiap tim menjadi {daftar_tim.max(100)}')
+    def gunakan_skill(self, **kwargs):
+        # elsa mengambil paket dari yang kita bikin
+        # di parameter ambil_tindakan pakai **kwargs
+        tim = kwargs.get('tim_pemain')
+
+        if tim:
+            berhasil_obati = False
+            for anggota in tim.values():
+                # pasif jalan kalau hp tim dibawah hp awalnya
+                if 0 < anggota.hp < anggota.heal_max:
+                    anggota.hp += self.healing
+                    berhasil_obati = True 
+        
+        if berhasil_obati:     
+            print(f'{self.nama} mengobati hp tim sebanyak {self.healing} \nhp setiap tim menjadi {tim.max(100)}')
+
+        return False # Agar Elsa tetap bisa menyerang biasa setelah nge-heal
 
 class Bruno(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
-        self.tangkis = False
+        self.menangkis = False # status awal
+        self.waktu_tunggu = 0
 
-    # skill aktif(liat huruf)
-    def gunakan_skill(self, damage):
-        if self.tangkis:
-            self.tangkis = False
-            pesan = f"{self.nama} menggunakan barbel super nya..!!! Tidak ada serangan monster yang terasa."
-            return pesan, True
+    def gunakan_skill(self, **kwargs):
+        # bruno dalam mode fokus bertahan, jadi dia gak nyerang
+        self.menangkis = True
+        return True
 
+    def menangkis_serangan(self, damage):
+        if  self.menangkis:
+            print(f'{self.nama} memakai barbelnya...! menghalau serangan monster dengan barbel yang kelihatannya berat itu')
+            self.menangkis = False
+            damage = 0 # buat damage jadi nol, agar tidak ngurangin hp bruno
+
+        # pas udah di manipulasi damagenya, baru serangan masuk
         super().menerima_serangan(damage)
 
 class Dewa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
+
+    def gunakan_skill(self, **kwargs):
+        musuh = kwargs.get('target')
+
+
 
 class Joy(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -68,19 +128,30 @@ class Joy(Dasar_Karakter):
         self.suntik_daya_tahan = 20
         self.waktu_tunggu = 0
 
-    def gunakan_skill(self):
+    def gunakan_skill(self, **kwargs):
+        # joy mengambil paket dari yang kita bikin
+        # di parameter ambil_tindakan pakai **kwargs
+        tim = kwargs.get('tim_pemain')
+
+        # kasih cooldown biar skill nya seimbang
+        # sekalian sama logika skill nya disini
         if self.waktu_tunggu == 0:
-            self.waktu_tunggu = 3
+            if tim:
+                for anggota in tim.values():
+                    anggota.hp += self.suntik_daya_tahan
 
-            for anggota in daftar_tim.values():
-                anggota.hp += self.suntik_daya_tahan
+            self.waktu_tunggu = 3  
 
-            pesan = f"{self.nama} memberikan suntikan! {self.heal_power} HP ditambahkan ke semua rekan."
-            return pesan, True
+            ut.bersihkan_terminal()
+            print(f"{self.nama} memberikan suntikan! {self.suntik_daya_tahan} HP ditambahkan ke semua rekan.")
+            return True
+        else:
+            print(f"Skill sedang cooldown! tunggu {self.waktu_tunggu} babak lagi")
+            return False
 
     def kurangi_cooldown(self):
-        if self.cooldown > 0:
-            self.cooldown -= 1
+        if self.waktu_tunggu > 0:
+            self.waktu_tunggu -= 1
 
 class Mikasa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -117,18 +188,19 @@ class Mikasa(Dasar_Karakter):
 #monster
 
 class Monster(Dasar_Karakter):
-    def __init__(self, nama, hp, atk):
-        super().__init__(nama, hp, atk)
+    def __init__(self, nama, hp):
+        self.nama = nama
+        self.hp = hp
         self.daftar_atk = [40,15,17,13]
         self.index_serangan = 0 # pengarah berasan damage yang diberikan monster
        
-    def serang(self, target):
+    def menyerang(self, target):
         if self.hp > 0:
             # serangan yang mau di kasih monster di arahin pakai index_serangan
             serangan_sekarang = self.daftar_atk[self.index_serangan]
 
             target.hp -= serangan_sekarang
-            print(f'sekarang {self.nama} balas menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk [kurung kurawal penyerang.hp]')        
+            print(f'sekarang {self.nama} menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk [kurung kurawal penyerang.hp]')        
 
             # index di tambah buat nuntun monster lanjut ke serangan berikutnya
             self.index_serangan += 1

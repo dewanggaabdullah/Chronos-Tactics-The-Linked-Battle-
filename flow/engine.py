@@ -68,22 +68,21 @@ def inisialisasi_karakter():
 
             # kalau pemain menyerang monster
             if aksi in tim_pemain:
-                ut.bersihkan_terminal()
                 penyerang = tim_pemain[aksi]
 
                 if penyerang.hp < 0:
                     print(f'\n~ [!] {penyerang.nama} sudah tidak berdaya, pilih teman yang lain!')
                     continue
 
-            # monster otomatis membalas menyerang
                 penyerang.ambil_tindakan(monster)
 
                 if monster.hp <= 0:
                     print(f'[!] berhasil...!!!, {monster.nama} telah dikalahkan...')
                     break
 
+                # monster otomatis membalas menyerang    
                 balasan_monster = monster.menyerang(penyerang)
-                print(f"\n[x] {monster.nama} murka dan menyerang balik {penyerang.nama}, memberikan damage sebesar {monster.atk}")
+                print(f"\n[x] {monster.nama} murka dan menyerang {penyerang.nama}, memberikan damage sebesar {monster.atk}")
 
             # kalau tim pemain ada yang hpnya setara/di bawah 0
                 if penyerang.hp <= 0:
@@ -93,6 +92,7 @@ def inisialisasi_karakter():
                     print()
                     print(f'[-] {penyerang.nama} bertahan! Hp tersisa: {penyerang.hp}')
             else:
+                ut.bersihkan_terminal()
                 print('\nnama tersebut tidak ada di dalam tim atau salah ketik')
 
 # [i] = input pemain dari terminal
