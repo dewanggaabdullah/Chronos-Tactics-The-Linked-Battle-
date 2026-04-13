@@ -3,7 +3,6 @@ from flow import char_choice as cc
 from flow import utils as ut
 from flow import story as st
 
-
 def inisialisasi_karakter():
     global tim_pemain, monster
 
@@ -13,20 +12,19 @@ def inisialisasi_karakter():
         return
     else:
         tim_pemain = cc.pemilihan_karakter(*daftar_karakter)
-        monster = un.Monster('ORC GURUN', 250, 40)
+        monster = un.Monster('ORC GURUN', 250)
 
     def jalankan_game(tim_pemain, monster):
         ut.bersihkan_terminal()
         print(f"=== PERTARUNGAN DIMULAI ===")
-        print(f'sebuah {monster.nama} muncul di perjalanan...!')
+        print(st.kedatangan_monster.format(monster = monster.nama))
 
         while monster.hp > 0:
             # cek anggota hidup
             if not any(tim_bertahan.hp > 0 for tim_bertahan in tim_pemain.values()):
                 print()
                 print('=' *30)
-                print('GAME OVER.. tidak ada lagi anggota dalam tim yang sanggup melanjutkan pertarungan')
-                print('CRONOS SPARKLE DIAKTIFKAN... KEMBALI KE MASA LALU!!!')
+                print(game_kalah)
                 print('=' *30)
                 break
         
@@ -62,38 +60,40 @@ def inisialisasi_karakter():
             aksi = input('\n[i] Pilih nama karakter untuk menyerang/menggunakan skill, atau ketik "kabur" buat melarikan diri\n>>>  ').lower().strip()
 
             if aksi == 'kabur':
-                print('[lol] kalian melarikan diri...!, monster itu terlalu kuat dan kalian ternyata hanya seekor anak ayam di mata seorang monster perkasa...(wkwk)\n<<< GAME OVER >>>')
+                print(kabur)
                 ut.bersihkan_terminal()
                 break
 
             # kalau pemain menyerang monster
             if aksi in tim_pemain:
-                penyerang = tim_pemain[aksi]
+                karakter = tim_pemain[aksi]
 
-                if penyerang.hp < 0:
-                    print(f'\n~ [!] {penyerang.nama} sudah tidak berdaya, pilih teman yang lain!')
+                if karakter.hp <= 0:
+                    print(st.karakter_kalah.format(nama = karakter.nama))
                     continue
 
-                penyerang.ambil_tindakan(monster)
+                karakter.ambil_tindakan(monster, tim_pemain)
 
                 if monster.hp <= 0:
-                    print(f'[!] berhasil...!!!, {monster.nama} telah dikalahkan...')
+                    print(st.monster_kalah.format(monster = monster.nama))
                     break
 
                 # monster otomatis membalas menyerang    
-                balasan_monster = monster.menyerang(penyerang)
-                print(f"\n[x] {monster.nama} murka dan menyerang {penyerang.nama}, memberikan damage sebesar {monster.atk}")
+                balasan_monster = monster.menyerang(karakter)
 
             # kalau tim pemain ada yang hpnya setara/di bawah 0
-                if penyerang.hp <= 0:
+                if karakter.hp <= 0:
                     print()
-                    print(f'[!] {penyerang.nama} tidak sanggup melanjutkan pertempuran... terus berjuang..!!!')
+                    print(st.karakter_kalah.format(nama = karakter.nama))
                 else:
                     print()
-                    print(f'[-] {penyerang.nama} bertahan! Hp tersisa: {penyerang.hp}')
+                    print(st.karakter_diserang.format(nama = karakter.nama, hp = karakter.hp))
             else:
                 ut.bersihkan_terminal()
-                print('\nnama tersebut tidak ada di dalam tim atau salah ketik')
+                print(st.nama_char_tidak_ada) 
+                # disini gak pakai format karna gak perlu
+                #(gak ada kata khusus yang dinamis dan pakai {})
+
 
 # [i] = input pemain dari terminal
 # [!] = momen penting

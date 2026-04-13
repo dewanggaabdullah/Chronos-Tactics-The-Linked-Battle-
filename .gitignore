@@ -2,6 +2,7 @@
 __pycache__/
 main_menu/__pycache__
 flow/__pycache__
+flow/node.py
 
 # buat virtual environment
 venv/

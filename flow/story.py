@@ -9,6 +9,25 @@ from pynput import keyboard
 # module bikin
 from flow import utils as ut
 
+# wadah pemberitahuan umum in-game, aku pakai sistem format biar clean
+# ofensif
+tim_menyerang = "\n[x] {nama} menyerang! memberikan damage sebesar {damage}."
+monster_menyerang = '\n[x] {monster} mulai menyerang...!, kali ini serangannya menghasilkan kerusakan setara {damage} untuk {target}'
+
+# defendsif
+karakter_diserang = '\n[-] {nama} menerima serangan...! Hp tersisa: {hp}'
+kabur = '\n[lol] kalian melarikan diri...!, monster itu terlalu kuat dan kalian ternyata hanya seekor anak ayam di mata seorang monster perkasa...(wkwk)\n<<< GAME OVER >>>'
+
+# menang/kalah
+pilihan_char_kalah = '\n[!] {nama} sudah tidak berdaya, pilih teman yang lain!'
+karakter_kalah = '\n[!] {nama} tidak sanggup melanjutkan pertempuran... terus berjuang..!!!'
+game_kalah = '\n[!] GAME OVER.. tidak ada lagi anggota dalam tim yang sanggup melanjutkan pertarungan\nCRONOS SPARKLE DIAKTIFKAN... KEMBALI KE MASA LALU!!!'
+monster_kalah = '\n[!] berhasil...!!!, {monster} telah dikalahkan...'
+
+# pesan lain-lain
+kedatangan_monster = '\n[!] sebuah {monster} muncul di perjalanan...!'
+nama_char_tidak_ada = '\n[?] nama tersebut tidak ada di dalam tim atau salah ketik'
+
 def print_story(text, speed='normal'):
     skip = False
     """

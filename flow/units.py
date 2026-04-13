@@ -1,5 +1,6 @@
 import traceback
-import utils as ut
+from flow import utils as ut
+from flow import story as st
 
 #karakter
 class Dasar_Karakter:
@@ -12,19 +13,21 @@ class Dasar_Karakter:
     def menyerang(self, target):
         damage = self.atk
         target.menerima_serangan(damage)
-        return f"\n[x] {self.nama} menyerang! memberikan damage sebesar {damage}."
+        return st.tim_menyerang.format(
+            nama = self.nama,
+            damage = self.atk,
+        )
 
     def menerima_serangan(self, damage):
         self.hp -= damage
-        pesan = f'{self.nama} terkena damage, hp berkurang sebanyak {damage} \ndarah {self.nama} tersisa: {self.hp}'
 
         if self.hp <= 0:
-            kalah = f'{self.nama} menyerah, pertarungan berakhir'
-            return kalah, False
+            self.hp = 0
+            return st.karakter_kalah.format(nama = self.nama), False
 
-        return pesan, True
+        return st.karakter_diserang.format(nama = self.nama, hp = self.hp), True
 
-    def ambil_tindakan(self, target):
+    def ambil_tindakan(self, target, tim_pemain):
         # cek apakah karakter punya skill aktif atau tidak
         aksi = getattr(self, 'gunakan_skill', None)
 
@@ -40,17 +43,19 @@ class Dasar_Karakter:
                     pilih = input('pilih nomor pada opsi,buat strategimu..!\n>>> ')
 
                     if pilih == '1':
-                        # kalau serangannya pasif, langsung menyerang musuh
+                        # kalau serangan biasa, langsung menyerang musuh
                         # langsung lolos fungsi...
+                        print(self.menyerang(target))
+
                         return False
 
                     elif pilih == '2':
                         # disini kirim target buat karakter dan objek tim_pemain
                         # sekaligus sebagai paket agar lebih scalable buat banyak 
                         # karakteristik skill karakter
-                        status_skill = aksi(target=target, tim_pemain=tim_pemain)
+                        status_skill = aksi(target = target, tim_pemain = tim_pemain)
 
-                        if status_skill True:
+                        if status_skill:
                             return True # kita tandai kalo skill udah aktif dan dipakai
                         else:
                             # skill lagi cooldown, jadi putaran gak valid dan ulang dari awal
@@ -60,10 +65,11 @@ class Dasar_Karakter:
                         # buat tutup celah kalau user bertingkah
                         raise ValueError
 
-            except ValueError:
-                print('harap masukkan input berupa angka pada opsi pilihan yang ada')
-            except Exception as e:
-                print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')
+                except ValueError:
+                    print('harap masukkan input berupa angka pada opsi pilihan yang ada')
+                except Exception as e:
+                    print(f'ada kesalahan yang tak terduga... \npesan buat developer\n')
+                    traceback.print_exc() # ini bakal nampilin tulisan error traceback buat mempermudah debug
 
         return False
 
@@ -120,8 +126,6 @@ class Dewa(Dasar_Karakter):
     def gunakan_skill(self, **kwargs):
         musuh = kwargs.get('target')
 
-
-
 class Joy(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
@@ -157,23 +161,26 @@ class Mikasa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super(). __init__(nama, hp, atk)
         self.bonus_serangan = 10
+        
+        # dekralasi awal buat nanti diubah jadi True
+        # kalau dewa sama mikasa, dan hp dewa rendah 
         self.mode_ngamuk = False
 
-    def skill_pasif(self, daftar_tim):
+    def gunakan_skill(self, **kwargs):
         # siapin variabel dewa buat loop, kalau dewa gak jumpa
         # dewa tetap none(gak ada)
         dewa = None
 
         for char in daftar_tim:
-            if char.nama == 'Dewa':
-                dewa = char # karna dewa jumpa, jadi diganti
+            if char.nama == 'Dewa' and char.hp > 0:
+                dewa = char # karna dewa jumpa, dan masih hidup, jadi keynya di aktifkan
                 break
 
         if dewa:
             # kalau dewa ada, mikasa dapat bonus serangan
-            if not hasattr(self, self.mode_ngamuk):
+            if not hasattr(self, 'bersama_dewa'): # cek pakai string attr mikasanya
                 self.atk += self.bonus_serangan
-                self.bonus_dewa = True
+                self.bersama_dewa = True # attr di buat dadakan dan langsung dipakai
 
             if dewa.hp < 30 and not self.mode_ngamuk:
                 self.atk *= 2 # meningkat 100 persen
@@ -184,6 +191,26 @@ class Mikasa(Dasar_Karakter):
                 self.atk /= 2 # kembali ke normal, cuman bonus bersama dewa yang masih valid 
                 self.mode_ngamuk = False
 
+        # kalau dewa mati, semua attribute mikasa hilang dan mengalami debuff parah
+        # agar game jadi lebih taktis(juga dewa gak ditumbalin sampe mati)  ;)
+        else:
+            # cek mikasa sebelumnya jika punya bonus dari dewa
+            if hasattr(self, 'bersama_dewa'):
+                print(f"!!! {self.nama.upper()} DEPRESI !!! {self.nama} kehilangan semangat bertarung...")
+
+                # reset bonus pertambahan basic attack bersama dewa
+                self.atk -= self.bonus_serangan
+
+                # buff mikasa hilang karna dewa udah mati
+                if self.mode_ngamuk:
+                    self.mode_ngamuk = False
+                    self.atk /= 2
+
+                # hapus attribute agar mikasa gak dibagi 2 terus damagenya tiap ronde
+                delattr(self, 'bersama_dewa')
+
+                # kasih debuff gak ngotak buat mikasa
+                self.atk /= 2
 
 #monster
 
@@ -192,20 +219,25 @@ class Monster(Dasar_Karakter):
         self.nama = nama
         self.hp = hp
         self.daftar_atk = [40,15,17,13]
-        self.index_serangan = 0 # pengarah berasan damage yang diberikan monster
+        self.index_serangan = 0 # pengarah balasan damage yang diberikan monster
        
     def menyerang(self, target):
         if self.hp > 0:
             # serangan yang mau di kasih monster di arahin pakai index_serangan
             serangan_sekarang = self.daftar_atk[self.index_serangan]
 
-            target.hp -= serangan_sekarang
-            print(f'sekarang {self.nama} menyerang...!, kali ini serangannya menghasilkan kerusakan setara {serangan_sekarang} untuk [kurung kurawal penyerang.hp]')        
+            target.menerima_serangan(serangan_sekarang)
+
+            print(st.monster_menyerang.format(
+                monster = self.nama, 
+                damage = serangan_sekarang,
+                target = target.nama
+            ))        
 
             # index di tambah buat nuntun monster lanjut ke serangan berikutnya
             self.index_serangan += 1
 
-            if self.index_serangan >= len(daftar_atk):
+            if self.index_serangan >= len(self.daftar_atk):
                 self.index_serangan = 0
 
         else:            
