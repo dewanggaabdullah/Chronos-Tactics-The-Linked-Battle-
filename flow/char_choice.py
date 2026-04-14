@@ -21,9 +21,9 @@ def validasi_karakter():
     
             if tanya == 'y':
                 print()
-                nama_input1 = 'dewa' #input('silahkan pilih karakter pertama:\n>>>  ').strip()
-                nama_input2 = 'joy' #input('karakter kedua:\n>>>  ').strip()
-                nama_input3 = 'mikasa' #input('karakter ketiga:\n>>>  ').strip()
+                nama_input1 = 'elsa' #input('silahkan pilih karakter pertama:\n>>>  ').strip()
+                nama_input2 = 'bruno' #input('karakter kedua:\n>>>  ').strip()
+                nama_input3 = 'dewa' #input('karakter ketiga:\n>>>  ').strip()
 
                 #logika sebelum permainan benar-benar berjalan dan cek jika ada yang sama atau ada yang kosong
                 #set = pengumpulan data yang harus beda

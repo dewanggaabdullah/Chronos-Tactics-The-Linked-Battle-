@@ -5,10 +5,13 @@ from flow import story as st
 #karakter
 class Dasar_Karakter:
     def __init__(self, nama, hp, atk):
+        # atribute dasar karakter
         self.nama = nama
         self.hp = hp
         self.atk = atk
+        # max_hp buat bantu skill pemulihan biar balance
         self.max_hp = hp
+        self.skill_pasif = False # default disini skill aktif
 
     def menyerang(self, target):
         damage = self.atk
@@ -31,9 +34,14 @@ class Dasar_Karakter:
         # cek apakah karakter punya skill aktif atau tidak
         aksi = getattr(self, 'gunakan_skill', None)
 
+        # kalau char punya skill dan skill nya itu pasif
+        if aksi and callable(aksi) and self.skill_pasif:
+            aksi(target=target, tim_pemain=tim_pemain) # aktifkan fungsi di dalam char dengan "gunakan skill"
+            print(self.menyerang(target)) # char dengan skill pasif langsung menyerang
+            return False
+
         if aksi and callable(aksi):
-            # disini kalau skill aktif cooldown, dan pemain masih panggil,
-            # maka monster gak nyerang dulu dan loop disini 
+            # disini pemain dikasih pilihan mau basic atk atau pakai skill
             while True:
                 print(f'\n--- giliran {self.nama} ---')
                 print('1.menyerang')
@@ -71,14 +79,16 @@ class Dasar_Karakter:
                     print(f'ada kesalahan yang tak terduga... \npesan buat developer\n')
                     traceback.print_exc() # ini bakal nampilin tulisan error traceback buat mempermudah debug
 
-        return False
-
+        else:   
+            print(self.menyerang(target))         
+            return False
 
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
-        super().__init__ (nama, hp, atk)
-        self.heal_max = hp
+        # aku pakai super() biar ngambil apa yang dasar karakter isi di __init__nya
+        super().__init__ (nama, hp, atk) 
         self.healing = 7
+        self.skill_pasif = True
 
     # skil pasif
     def gunakan_skill(self, **kwargs):
@@ -90,14 +100,19 @@ class Elsa(Dasar_Karakter):
             berhasil_obati = False
             for anggota in tim.values():
                 # pasif jalan kalau hp tim dibawah hp awalnya
-                if 0 < anggota.hp < anggota.heal_max:
+                if 0 < anggota.hp < anggota.max_hp:
                     anggota.hp += self.healing
+
+                    # sedikit logika batesin pemulihan elsa diar gak over heal
+                    if anggota.hp > anggota.max_hp:
+                        anggota.hp = anggota.max_hp
+
                     berhasil_obati = True 
         
         if berhasil_obati:     
-            print(f'{self.nama} mengobati hp tim sebanyak {self.healing} \nhp setiap tim menjadi {tim.max(100)}')
+            print(f'\n[PASIF] {self.nama} memulihkan HP tim!')
 
-        return False # Agar Elsa tetap bisa menyerang biasa setelah nge-heal
+        return True # fungsi berhasil dijalankan dengan lancar
 
 class Bruno(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -122,9 +137,35 @@ class Bruno(Dasar_Karakter):
 class Dewa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
+        self.waktu_tunggu = 3
+        self.damage_dasar = atk # simpan nilai asli agar serangan bisa direset
+        self.damage_critical = 40
+        self.skill_pasif = True
 
     def gunakan_skill(self, **kwargs):
         musuh = kwargs.get('target')
+
+        if self.waktu_tunggu == 0:
+            self.atk = self.damage_critical # damage critical yang dikasih dewa
+
+            ut.bersihkan_terminal()
+            print(f"!!! {self.nama} MENGELUARKAN SERANGAN CRITICAL... damage sebesar {self.atk} diberikan...!!!")
+            
+            # Kita tidak perlu memanggil self.menyerang(musuh) di sini
+            # karena Class Dasar akan memanggilnya setelah fungsi ini selesai.
+            # Cukup biarkan self.atk dalam kondisi tinggi saat fungsi ini berakhir.
+            
+            self.waktu_tunggu = 3
+            return True
+        else:
+            # jika belum seharusnya critical, atk harus kembali ke normal
+            self.atk = self.damage_dasar
+            self.kurangi_cooldown()
+            return False
+
+    def kurangi_cooldown(self):
+        if self.waktu_tunggu > 0:
+            self.waktu_tunggu -= 1 
 
 class Joy(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -142,6 +183,7 @@ class Joy(Dasar_Karakter):
         if self.waktu_tunggu == 0:
             if tim:
                 for anggota in tim.values():
+                    # joy gak pakai batas max_hp, biar joy op
                     anggota.hp += self.suntik_daya_tahan
 
             self.waktu_tunggu = 3  
@@ -165,10 +207,12 @@ class Mikasa(Dasar_Karakter):
         # dekralasi awal buat nanti diubah jadi True
         # kalau dewa sama mikasa, dan hp dewa rendah 
         self.mode_ngamuk = False
+        self.skill_pasif = True
 
     def gunakan_skill(self, **kwargs):
         # siapin variabel dewa buat loop, kalau dewa gak jumpa
-        # dewa tetap none(gak ada)
+        # dewa tetap none(gak ada), ambil data dari kwargs buat liat isi tim_pemain
+        daftar_tim = kwargs.get('tim_pemain, []')
         dewa = None
 
         for char in daftar_tim:
@@ -211,6 +255,10 @@ class Mikasa(Dasar_Karakter):
 
                 # kasih debuff gak ngotak buat mikasa
                 self.atk /= 2
+
+        #Karena ini pasif, kita return True 
+        # supaya sistem tahu "skill pasif" sudah diproses
+        return True
 
 #monster
 
