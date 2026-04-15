@@ -36,7 +36,7 @@ class Dasar_Karakter:
 
         # kalau char punya skill dan skill nya itu pasif
         if aksi and callable(aksi) and self.skill_pasif:
-            aksi(target=target, tim_pemain=tim_pemain) # aktifkan fungsi di dalam char dengan "gunakan skill"
+            aksi(target=target, tim_pemain=tim_pemain) # aktifkan fungsi di dalam char dengan input "gunakan skill"
             print(self.menyerang(target)) # char dengan skill pasif langsung menyerang
             return False
 
@@ -110,7 +110,6 @@ class Elsa(Dasar_Karakter):
                     berhasil_obati = True 
         
         if berhasil_obati:     
-            print(f'\n[PASIF] {self.nama} memulihkan HP tim!')
 
         return True # fungsi berhasil dijalankan dengan lancar
 

@@ -20,6 +20,12 @@ def inisialisasi_karakter():
         print(st.kedatangan_monster.format(monster = monster.nama))
 
         while monster.hp > 0:
+            # jalankan semua efek pasif di awal turn
+            for char in tim_pemain.values():
+                # setiap char yang punya skill pasif positif, jalanin duluan
+                if hasattr(char, 'aktifkan_pasif'):
+                    char.aktifkan_pasif(tim_pemain)
+
             # cek anggota hidup
             if not any(tim_bertahan.hp > 0 for tim_bertahan in tim_pemain.values()):
                 print()
@@ -69,7 +75,7 @@ def inisialisasi_karakter():
                 karakter = tim_pemain[aksi]
 
                 if karakter.hp <= 0:
-                    print(st.karakter_kalah.format(nama = karakter.nama))
+                    print(st.pilihan_char_kalah.format(nama = karakter.nama))
                     continue
 
                 karakter.ambil_tindakan(monster, tim_pemain)
@@ -88,6 +94,11 @@ def inisialisasi_karakter():
                 else:
                     print()
                     print(st.karakter_diserang.format(nama = karakter.nama, hp = karakter.hp))
+
+            for nama, char in tim_pemain.items():
+                if char.skill_pasif and char.hp > 0:
+                    char.ambil_tindakan(monster, tim_pemain)
+
             else:
                 ut.bersihkan_terminal()
                 print(st.nama_char_tidak_ada) 
