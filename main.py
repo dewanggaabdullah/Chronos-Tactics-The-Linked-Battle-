@@ -22,11 +22,11 @@ def main_menu():
         print('\npilih angka pada nomor diatas sebagai input...')
 
         def game_dimulai():
-            st.prolog()
+            # st.prolog()
             en.inisialisasi_karakter()
 
         def settings():
-        #ini gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan
+        #ini sekarang gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan
             ut.bersihkan_terminal()
             print("=== SETTINGS ===")
             print("1. Difficulty: indonesia")

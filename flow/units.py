@@ -109,7 +109,8 @@ class Elsa(Dasar_Karakter):
 
                     berhasil_obati = True 
         
-        if berhasil_obati:     
+        if berhasil_obati:  
+            print('berhasil obati')   
 
         return True # fungsi berhasil dijalankan dengan lancar
 
