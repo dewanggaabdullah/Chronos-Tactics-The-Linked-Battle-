@@ -10,14 +10,14 @@ def pemilihan_karakter(k1, k2, k3):
             tim_pemain[nama_input] = attribute_karakter
 
     return tim_pemain
-
+   
 def validasi_karakter():
     #aku mempelajari kalau variabel global harus di devenisikan dulu
     global nama_input1, nama_input2, nama_input3
 
     while True:
         try:
-            tanya = input('apakah tetap lanjut ke permainan?...\ny/n >>> ').strip().lower()
+            tanya = "y" # input('apakah tetap lanjut ke permainan?...\ny/n >>> ').strip().lower()
     
             if tanya == 'y':
                 print()

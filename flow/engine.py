@@ -2,7 +2,7 @@ from flow import units as un
 from flow import char_choice as cc
 from flow import utils as ut
 from flow import story as st
-
+   
 def inisialisasi_karakter():
     global tim_pemain, monster
 
@@ -12,6 +12,9 @@ def inisialisasi_karakter():
         return
     else:
         tim_pemain = cc.pemilihan_karakter(*daftar_karakter)
+        # aku pakai * agar dapat jumblah karakter dinamis
+        # dan gak perlu nulis variabelnya satu satu pakai cara manual
+
         monster = un.Monster('ORC GURUN', 250)
 
     def jalankan_game(tim_pemain, monster):
@@ -40,27 +43,27 @@ def inisialisasi_karakter():
                 hp_display = f'{k.hp} HP' if k.hp > 0 else '-'
                 # ljust(left justify) membuat nama karakter bila kurang dari 51 karakter,
                 # maka python akan membuat spasi buat mengisi kekosongan sampai cukup
-                baris = f'║ {i}. {k.nama.upper()}: {hp_display}'.ljust(51) + '║'
+                baris = f'║ {i}. {k.nama.upper()}: {hp_display}'.ljust(24) + '║'
                 status_anggota.append(baris)
 
             # Cetak Tabel (Hanya Satu Kali per ronde)
-            print("\n╔══════════════════════════════════════════════════╗")
-            print("║                   STATUS UNIT                    ║")
-            print("╠══════════════════════════════════════════════════╣")
-            print("║ TIM:                                             ║")
+            print("\n╔═══════════════════════╗")
+            print("║      STATUS UNIT      ║")
+            print("╠═══════════════════════╣")
+            print("║ TIM:                  ║")
             
             for baris in status_anggota:
                 print(baris)
                 
-            print("║                                                  ║")
-            print("╠══════════════════════════════════════════════════╣")
-            print("║ MUSUH:                                           ║")
+            print("║                       ║")
+            print("╠═══════════════════════╣")
+            print("║ MUSUH:                ║")
             
             # Status Monster
-            status_monster = f"║ 1. {monster.nama.upper()}: {monster.hp} HP".ljust(51) + "║"
+            status_monster = f"║ 1. {monster.nama.upper()}: {monster.hp} HP".ljust(24) + "║"
             print(status_monster)
             
-            print("╚══════════════════════════════════════════════════╝")
+            print("╚═══════════════════════╝")
 
             # pilihan aksi yang dapat dipilih pemain
             aksi = input('\n[i] Pilih nama karakter untuk menyerang/menggunakan skill, atau ketik "kabur" buat melarikan diri\n>>>  ').lower().strip()
@@ -94,10 +97,6 @@ def inisialisasi_karakter():
                 else:
                     print()
                     print(st.karakter_diserang.format(nama = karakter.nama, hp = karakter.hp))
-
-            for nama, char in tim_pemain.items():
-                if char.skill_pasif and char.hp > 0:
-                    char.ambil_tindakan(monster, tim_pemain)
 
             else:
                 ut.bersihkan_terminal()
