@@ -5,15 +5,14 @@ from flow import story as st
 #karakter
 class Dasar_Karakter:
     def __init__(self, nama, hp, atk):
-        # atribute dasar karakter
         self.nama = nama
         self.hp = hp
         self.atk = atk
-        # max_hp buat bantu skill pemulihan biar balance
         self.max_hp = hp
-        self.skill_pasif = False # default disini skill aktif
+        self.skill_pasif = False # buat default nya char gak punya pasif
 
     def menyerang(self, target):
+        """basic attack mengurangi hp target"""
         damage = self.atk
         target.menerima_serangan(damage)
         return st.tim_menyerang.format(
@@ -30,58 +29,61 @@ class Dasar_Karakter:
 
         return st.karakter_diserang.format(nama = self.nama, hp = self.hp), True
 
-    def ambil_tindakan(self, target, tim_pemain):
-        # cek apakah karakter punya skill aktif atau tidak
-        aksi = getattr(self, 'gunakan_skill', None)
+    def jalankan_pasif(self, **kwargs):
+        """
+        kwargs akan menampung apapun yang dikasih,target, tim pemain, musuh, dll
+        """
+        if self.skill_pasif:
+            # teruskan **kwargs ke fungsi logika
+            self.gunakan_skill_pasif(**kwargs)
 
-        # kalau char punya skill dan skill nya itu pasif
-        if aksi and callable(aksi) and self.skill_pasif:
-            aksi(target=target, tim_pemain=tim_pemain) # aktifkan fungsi di dalam char dengan input "gunakan skill"
-            print(self.menyerang(target)) # char dengan skill pasif langsung menyerang
-            return False
+    def skill_pasif(self, **kwargs):
+        """fungsi ini nanti akan diisi oleh char pasif"""
+        pass
 
-        if aksi and callable(aksi):
-            # disini pemain dikasih pilihan mau basic atk atau pakai skill
+    def skill_aktif(self, **kwargs):
+        """
+        menu opsi pilihan char waktu karakter aktif dipanggil
+        """
+        # bongkar kwargs
+        target = kwargs.get('monster')
+        tim_pemain = kwargs.get('tim_pemain')
+
+        # nge check apakah ada fungsi "gunakan_skill_aktif" (kaya bruno)
+        fungsi_skill = getattr(self, 'gunakan_skill', None)
+
+        if self.gunakan_skill and callable(fungsi_skill):
             while True:
-                print(f'\n--- giliran {self.nama} ---')
-                print('1.menyerang')
-                print('2.gunakan skill')
+                print(f'\n--- putaran {self.nama} ---')
+                print('1. menyerang')
+                print('2. gunakan skill')
 
-                try:
-                    pilih = input('pilih nomor pada opsi,buat strategimu..!\n>>> ')
+                pilih = input('pilih opsi berdasarkan nomor, ambil keputusanmu!...\n>>> ')
+                
+                if pilih == '1':
+                    print(self.menyerang(target))
+                    return False # giliran selesai
 
-                    if pilih == '1':
-                        # kalau serangan biasa, langsung menyerang musuh
-                        # langsung lolos fungsi...
-                        print(self.menyerang(target))
+                # pakai variabel yang udah didefinisikan dari kwargs
+                elif pilih == '2':
+                    status = fungsi_skill(target = target, tim_pemain = tim_pemain)
 
-                        return False
-
-                    elif pilih == '2':
-                        # disini kirim target buat karakter dan objek tim_pemain
-                        # sekaligus sebagai paket agar lebih scalable buat banyak 
-                        # karakteristik skill karakter
-                        status_skill = aksi(target = target, tim_pemain = tim_pemain)
-
-                        if status_skill:
-                            return True # kita tandai kalo skill udah aktif dan dipakai
-                        else:
-                            # skill lagi cooldown, jadi putaran gak valid dan ulang dari awal
-                            # agar pemain gak rugi giliran
-                            continue
-                    else:
-                        # buat tutup celah kalau user bertingkah
-                        raise ValueError
-
-                except ValueError:
-                    print('harap masukkan input berupa angka pada opsi pilihan yang ada')
-                except Exception as e:
-                    print(f'ada kesalahan yang tak terduga... \npesan buat developer\n')
-                    traceback.print_exc() # ini bakal nampilin tulisan error traceback buat mempermudah debug
-
-        else:   
-            print(self.menyerang(target))         
+                    if status: 
+                        return True # skill berhasil dijalankan
+                    
+                    else: 
+                        print(f"{self.nama} tidak punya skill aktif, otomatis menyerang!")
+                        print("Skill gagal/cooldown! Pilih lagi.")
+                        continue # skill cooldown atau gagal, ulangi menu
+        else:
+            # kalau char gak punya skill aktif, suruh pukul aja
+            print(self.menyerang(target))
             return False
+
+    """
+    elsa punya pasif menyembuhkan, tapi tetap bisa mukul, jadi karna char jenis ini skill nya
+    gak perlu dipanggil, maka dia gak masuk menu kaya karakter aktif
+    """
 
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -90,49 +92,43 @@ class Elsa(Dasar_Karakter):
         self.healing = 7
         self.skill_pasif = True
 
-    # skil pasif
-    def gunakan_skill(self, **kwargs):
+    def gunakan_skill_pasif(self, **kwargs):
         # elsa mengambil paket dari yang kita bikin
         # di parameter ambil_tindakan pakai **kwargs
         tim = kwargs.get('tim_pemain')
 
         if tim:
-            berhasil_obati = False
             for anggota in tim.values():
                 # pasif jalan kalau hp tim dibawah hp awalnya
                 if 0 < anggota.hp < anggota.max_hp:
-                    anggota.hp += self.healing
+                    anggota.hp = min(anggota.hp + self.healing, anggota.max_hp)
 
-                    # sedikit logika batesin pemulihan elsa diar gak over heal
-                    if anggota.hp > anggota.max_hp:
-                        anggota.hp = anggota.max_hp
+            print(f"✨ {self.nama} memberikan pemulihan pasif ke tim!")
 
-                    berhasil_obati = True 
-        
-        if berhasil_obati:  
-            print('berhasil obati')   
-
-        return True # fungsi berhasil dijalankan dengan lancar
+    """
+    nah, kalau char jenis ini saat dipilih user, maka game akan masuk ke menu pemilihan
+    apakah user mau basic attack, atau mau pakai skill aktifnya
+    """
 
 class Bruno(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
         self.menangkis = False # status awal
-        self.waktu_tunggu = 0
 
     def gunakan_skill(self, **kwargs):
         # bruno dalam mode fokus bertahan, jadi dia gak nyerang
+        print(f'{self.nama} mengunakan barbelnya, fokus menangkis serangan!')
         self.menangkis = True
         return True
 
-    def menangkis_serangan(self, damage):
+    def menerima_serangan(self, damage):
         if  self.menangkis:
             print(f'{self.nama} memakai barbelnya...! menghalau serangan monster dengan barbel yang kelihatannya berat itu')
-            self.menangkis = False
             damage = 0 # buat damage jadi nol, agar tidak ngurangin hp bruno
+            self.menangkis = False
 
         # pas udah di manipulasi damagenya, baru serangan masuk
-        super().menerima_serangan(damage)
+        return super().menerima_serangan(damage)
 
 class Dewa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -142,7 +138,7 @@ class Dewa(Dasar_Karakter):
         self.damage_critical = 40
         self.skill_pasif = True
 
-    def gunakan_skill(self, **kwargs):
+    def gunakan_skill_pasif(self, **kwargs):
         musuh = kwargs.get('target')
 
         if self.waktu_tunggu == 0:
@@ -166,6 +162,44 @@ class Dewa(Dasar_Karakter):
     def kurangi_cooldown(self):
         if self.waktu_tunggu > 0:
             self.waktu_tunggu -= 1 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Joy(Dasar_Karakter):
     def __init__(self, nama, hp, atk):

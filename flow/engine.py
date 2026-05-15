@@ -37,6 +37,13 @@ def inisialisasi_karakter():
                 print('=' *30)
                 break
         
+            # pasif char jalan
+            target = None
+
+            for char in tim_pemain.values():
+                # kita jalanin pasif, kemarin kulihat di game rpg, heal positif selalu di awal turn
+                char.jalankan_pasif(target = target,tim_pemain = tim_pemain)
+
             # siapkan baris status buat anggota tim
             status_anggota = []
             for i, k in enumerate(tim_pemain.values(), 1):
@@ -81,7 +88,13 @@ def inisialisasi_karakter():
                     print(st.pilihan_char_kalah.format(nama = karakter.nama))
                     continue
 
-                karakter.ambil_tindakan(monster, tim_pemain)
+                # char pasif langsung menyerang
+                if karakter.skill_pasif:
+                    print(karakter.menyerang(monster))
+                    continue # giliran selesai
+                
+                # char aktif memilih serang basic attack atau pakai skill
+                karakter.skill_aktif(monster = monster, tim_pemain = tim_pemain)
 
                 if monster.hp <= 0:
                     print(st.monster_kalah.format(monster = monster.nama))
