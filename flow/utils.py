@@ -10,6 +10,13 @@ def bersihkan_terminal():
     else:
         os.system('clear')
 
+# Kode Warna ANSI
+MERAH  = "\033[91m"
+HIJAU  = "\033[92m"
+KUNING = "\033[93m"
+BIRU   = "\033[94m"
+RESET  = "\033[0m" # <--- reset buat balikin warna ke semula dan biar tulisan bawahnya gak ikutan berwarna
+
 # variabel sama fungsi yang nanti bisa bikin story ke skip untuk mempercepat debugging
 # atau waktu user ke isi permainan
 # nanti si 'skip' ini yang jadi sakelar buat delay outputnya

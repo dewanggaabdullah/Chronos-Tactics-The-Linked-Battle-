@@ -7,9 +7,11 @@ class Dasar_Karakter:
     def __init__(self, nama, hp, atk):
         self.nama = nama
         self.hp = hp
-        self.atk = atk
         self.max_hp = hp
+        self.atk = atk
+        self.atk_dasar = atk_dasar
         self.skill_pasif = False # buat default nya char gak punya pasif
+
 
     def menyerang(self, target):
         """basic attack mengurangi hp target"""
@@ -80,6 +82,23 @@ class Dasar_Karakter:
             print(self.menyerang(target))
             return False
 
+    def kurangi_cooldown(self):
+        """
+        fungsi universal, buat dipakein super(). di char yang butuh
+        """
+        if self.cooldown > 0:
+            self.waktu_tunggu -= 1
+
+    def setup_statistik_awal(self):
+        """
+        Standar permainan: Mengembalikan semua buff/debuff 
+        dan modifikasi stat ke angka dasar asli mereka.
+        """
+        self.atk = self.atk_dasar
+        self.hp = self.max_hp
+        # Jika nanti ada stat lain seperti defense atau speed, reset juga di sini
+        # self.defense = self.defense_dasar
+
     """
     elsa punya pasif menyembuhkan, tapi tetap bisa mukul, jadi karna char jenis ini skill nya
     gak perlu dipanggil, maka dia gak masuk menu kaya karakter aktif
@@ -103,7 +122,7 @@ class Elsa(Dasar_Karakter):
                 if 0 < anggota.hp < anggota.max_hp:
                     anggota.hp = min(anggota.hp + self.healing, anggota.max_hp)
 
-            print(f"✨ {self.nama} memberikan pemulihan pasif ke tim!")
+            print(f"\n[*] {self.nama} memberikan pemulihan pasif ke tim!")
 
     """
     nah, kalau char jenis ini saat dipilih user, maka game akan masuk ke menu pemilihan
@@ -113,27 +132,34 @@ class Elsa(Dasar_Karakter):
 class Bruno(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
+        cooldown = 0
         self.menangkis = False # status awal
 
     def gunakan_skill(self, **kwargs):
         # bruno dalam mode fokus bertahan, jadi dia gak nyerang
-        print(f'{self.nama} mengunakan barbelnya, fokus menangkis serangan!')
         self.menangkis = True
         return True
 
     def menerima_serangan(self, damage):
         if  self.menangkis:
-            print(f'{self.nama} memakai barbelnya...! menghalau serangan monster dengan barbel yang kelihatannya berat itu')
+            print(f'\n[*] {self.nama} memakai barbelnya...! menghalau serangan monster dengan barbel yang kelihatannya berat itu')
             damage = 0 # buat damage jadi nol, agar tidak ngurangin hp bruno
             self.menangkis = False
 
         # pas udah di manipulasi damagenya, baru serangan masuk
         return super().menerima_serangan(damage)
 
+    def setup_statistik_awal(self):
+        # kita jalanin reset dari dasar_karakter, baru yang lokal
+        super().setup_statistik_awal()
+
+        # atur kondisi char biar tiga dan berkurang saat ronde berjalan
+        self.cooldown = 0
+
 class Dewa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
-        self.waktu_tunggu = 3
+        self.cooldown = 3
         self.damage_dasar = atk # simpan nilai asli agar serangan bisa direset
         self.damage_critical = 40
         self.skill_pasif = True
@@ -145,7 +171,7 @@ class Dewa(Dasar_Karakter):
             self.atk = self.damage_critical # damage critical yang dikasih dewa
 
             ut.bersihkan_terminal()
-            print(f"!!! {self.nama} MENGELUARKAN SERANGAN CRITICAL... damage sebesar {self.atk} diberikan...!!!")
+            print(f"[*] !!! {self.nama} MENGELUARKAN SERANGAN CRITICAL... damage sebesar {self.atk} diberikan...!!!")
             
             # Kita tidak perlu memanggil self.menyerang(musuh) di sini
             # karena Class Dasar akan memanggilnya setelah fungsi ini selesai.
@@ -157,11 +183,14 @@ class Dewa(Dasar_Karakter):
             # jika belum seharusnya critical, atk harus kembali ke normal
             self.atk = self.damage_dasar
             self.kurangi_cooldown()
-            return False
+            return False 
 
-    def kurangi_cooldown(self):
-        if self.waktu_tunggu > 0:
-            self.waktu_tunggu -= 1 
+    def setup_statistik_awal(self):
+        # kita jalanin reset dari dasar_karakter, baru yang lokal
+        super().setup_statistik_awal()
+
+        # atur kondisi char biar tiga dan berkurang saat ronde berjalan
+        self.cooldown = 3
 
 
 
@@ -228,6 +257,13 @@ class Joy(Dasar_Karakter):
         else:
             print(f"Skill sedang cooldown! tunggu {self.waktu_tunggu} babak lagi")
             return False
+
+    def setup_statistik_awal(self):
+        # kita jalanin reset dari dasar_karakter, baru yang lokal
+        super().setup_statistik_awal()
+
+        # atur kondisi char biar nol dan bisa langsung dipakai
+        self.cooldown = 0
 
     def kurangi_cooldown(self):
         if self.waktu_tunggu > 0:

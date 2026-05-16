@@ -23,8 +23,8 @@ cerita_karakter = {
 tim_menyerang = "\n[x] {nama} menyerang! memberikan damage sebesar {damage}."
 monster_menyerang = '\n[x] {monster} mulai menyerang...!, kali ini serangannya menghasilkan kerusakan setara {damage} untuk {target}'
 
-# defendsif
-karakter_diserang = '\n[-] {nama} menerima serangan...! Hp tersisa: {hp}'
+# defensif
+karakter_diserang = '[-] {nama} menerima serangan...! Hp tersisa: {hp}'
 kabur = '\n[lol] kalian melarikan diri...!, monster itu terlalu kuat dan kalian ternyata hanya seekor anak ayam di mata seorang monster perkasa...(wkwk)\n<<< GAME OVER >>>'
 
 # menang/kalah

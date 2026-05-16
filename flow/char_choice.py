@@ -9,7 +9,7 @@ def pemilihan_karakter(k1, k2, k3):
 
             tim_pemain[nama_input] = attribute_karakter
 
-    return tim_pemain
+    return tim_pemain # <--- tim_pemain disini berbentuk dictionary
    
 def validasi_karakter():
     #aku mempelajari kalau variabel global harus di devenisikan dulu
