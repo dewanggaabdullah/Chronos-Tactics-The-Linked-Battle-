@@ -37,7 +37,7 @@ def inisialisasi_karakter():
         print(st.kedatangan_monster.format(monster = monster.nama))
 
         while monster.hp > 0:
-            # jalankan semua efek pasif di awal turn
+            # jalankan semua efek pasif heal/buffer di awal turn, seperti elsa
             for char in tim_pemain.values():
                 # setiap char yang punya skill pasif positif, jalanin duluan
                 if hasattr(char, 'aktifkan_pasif'):
@@ -52,10 +52,10 @@ def inisialisasi_karakter():
                 break
         
             # pasif char jalan
-            target = None
+            target = monster
 
             for char in tim_pemain.values():
-                # kita jalanin pasif, kemarin kulihat di game rpg, heal positif selalu di awal turn
+                # kita jalanin pasif universal, kaya dewa dan mikasa
                 char.jalankan_pasif(target = target,tim_pemain = tim_pemain)
 
             # =========================================================================
@@ -68,10 +68,24 @@ def inisialisasi_karakter():
                 status_anggota = []
                 for i, k in enumerate(tim_pemain.values(), 1):
                     hp_display = f'{k.hp} HP' if k.hp > 0 else '-'
-                    # ljust(left justify) membuat nama karakter bila kurang dari 51 karakter,
-                    # maka python akan membuat spasi buat mengisi kekosongan sampai cukup
-                    baris = f'║ {i}. {k.nama.upper()}: {hp_display}'.ljust(24) + '║'
+
+                    # buat baris demi baris secara manual
+                    teks_mentah = f'║ {i}. {k.nama.upper()}: {hp_display}'
+
+                    # kita bikin text char hijau waktu skill bisa di gunain...!!
+                    if hasattr(k,'cooldown') and k.cooldown == 0 and k.hp > 0:
+                        nama_display = f'{ut.hijau}{i}. {k.nama.upper()}: {hp_display}{ut.RESET}'
+                    else:
+                        nama_display = f'{i}. {k.nama.upper()}: {hp_display}'
+
+                    # hitung dulu sisa spasi pembatas kanan secara manual
+                    lebar_tabel = 25
+                    sisa_spasi = lebar_tabel - len(teks_mentah) - 1
+
+                    # baru gabungkan teks berwarna dengan sisa spasi manual dan tutup dengan ║
+                    baris = f'║ {nama_display}' + (' ' * sisa_spasi) + "║"
                     status_anggota.append(baris)
+
 
                 # Cetak Tabel (Hanya Satu Kali per ronde)
                 print("\n╔═══════════════════════╗")
@@ -96,9 +110,10 @@ def inisialisasi_karakter():
                 aksi = input('\n[i] Pilih nama karakter untuk menyerang/menggunakan skill, atau ketik "kabur" buat melarikan diri\n>>>  ').lower().strip()
 
                 if aksi == 'kabur':
-                    print(kabur)
                     ut.bersihkan_terminal()
-                    break
+                    print(st.kabur)
+                    print()
+                    return
 
                 # kalau pemain menyerang monster
                 if aksi in tim_pemain:
@@ -140,13 +155,14 @@ def inisialisasi_karakter():
                     print()
                     print(st.karakter_diserang.format(nama = karakter.nama, hp = karakter.hp))
 
+            # =========================================================================
+            # FASE AKHIR: AKHIR BABAK/ SEBELUM RONDE BERIKUTNYA
+            # =========================================================================
 
-# [i] = input pemain dari terminal
-# [!] = momen penting
-# [X] = info pertarungan(serangan)
-# [-] = info pertarungan(menerima serangan)
-# [*] = skill karakter
-# [lol] = tolol(tertawa terbahak-bahak)
+            for char in tim_pemain_values():
+                # cek char masih hidup dan punya skill aktif/pasif yang cooldown 
+                if hasattr(char, 'cooldown') and char.hp > 0:
+                    char.kurangi_cooldown()
 
     jalankan_game(tim_pemain, monster)
     

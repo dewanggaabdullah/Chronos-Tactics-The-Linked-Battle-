@@ -12,41 +12,47 @@ def pemilihan_karakter(k1, k2, k3):
     return tim_pemain # <--- tim_pemain disini berbentuk dictionary
    
 def validasi_karakter():
-    #aku mempelajari kalau variabel global harus di devenisikan dulu
-    global nama_input1, nama_input2, nama_input3
-
     while True:
         try:
-            tanya = "y" # input('apakah tetap lanjut ke permainan?...\ny/n >>> ').strip().lower()
+            tanya = input('apakah tetap lanjut ke permainan?...\ny/n >>> ').strip().lower()
     
             if tanya == 'y':
                 print()
-                nama_input1 = 'elsa' #input('silahkan pilih karakter pertama:\n>>>  ').strip()
-                nama_input2 = 'bruno' #input('karakter kedua:\n>>>  ').strip()
-                nama_input3 = 'dewa' #input('karakter ketiga:\n>>>  ').strip()
-
-                #logika sebelum permainan benar-benar berjalan dan cek jika ada yang sama atau ada yang kosong
-                #set = pengumpulan data yang harus beda
-                #len = hitung isi dalam list
+                nama_input1 = input('silahkan pilih karakter pertama:\n>>>  ').strip()
+                nama_input2 = input('karakter kedua:\n>>>  ').strip()
+                nama_input3 = input('karakter ketiga:\n>>>  ').strip()
+                
                 tim_pemain = [nama_input1, nama_input2, nama_input3]
+
+                # logika sebelum permainan benar-benar berjalan dan cek jika ada yang sama atau ada yang kosong
+                # set = pengumpulan data yang harus beda
+                # len = hitung isi dalam list
                 if len(set(tim_pemain)) < 3 or "" in tim_pemain:
-                    raise ValueError
+                    raise ValueError('nama kembar atau kosong')
+
+                for nama in tim_pemain:
+                    if nama not in KARAKTER_VALID:
+                        raise ValueError('karakter tidak valid')
+
+                # kembalikan list nama yang udah di validasikan    
                 return tim_pemain
-                break
             
             elif tanya == 'n':
                 ut.bersihkan_terminal()
-                return 'kembali...',False
+                return None
             
             else:
                 print('pilih kembali ke menu dengan huruf "n", atau "y" untuk melanjutkan game.')
                 continue
         
         except ValueError:
-            print('nama karakter tidak boleh sama atau nama karakter tidak ada')
-        """except NameError:
-            print('tidak boleh memilih nama karakter yang sama...')"""
-        """except Exception as e:
-            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n{e}')
-            break"""
+            if str(e) == "nama_kembar_atau_kosong":
+                print('\n[!] Nama karakter tidak boleh sama atau ada yang kosong! Silakan pilih ulang.')
+            elif str(e) == "karakter_tidak_valid":
+                print(f'\n[!] Ada nama karakter yang tidak terdaftar! Karakter yang tersedia: {", ".join(KARAKTER_VALID).upper()}')
+        
+        except Exception as e:
+            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n')
+            traceback.print_exc() # ini bakal nampilin tulisan error traceback buat mempermudah debug
+
 

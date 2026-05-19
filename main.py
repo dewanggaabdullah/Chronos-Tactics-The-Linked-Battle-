@@ -22,7 +22,7 @@ def main_menu():
         print('\npilih angka pada nomor diatas sebagai input...')
 
         def game_dimulai():
-            # st.prolog()
+            st.prolog()
             en.inisialisasi_karakter()
 
         def settings():
