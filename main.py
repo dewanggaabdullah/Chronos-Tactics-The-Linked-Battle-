@@ -59,7 +59,7 @@ def main_menu():
             traceback.print_exc() # ini bakal nampilin tulisan error traceback buat mempermudah debug
 
         try:
-            input("\n<< Tekan Enter saja buat kembali ke menu >> ")
+            input("\n<< Tekan Enter buat kembali ke menu >> ")
         except EOFError:
             print('output habis')
 
