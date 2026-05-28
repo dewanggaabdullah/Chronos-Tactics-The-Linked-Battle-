@@ -256,20 +256,21 @@ class Mikasa(Dasar_Karakter):
         # kalau skill pasif harus true, karna skill mikasa pasif  
         self.mode_ngamuk = False
         self.skill_pasif = True
-        self.sudah_defpresi = False
+        self.sudah_depresi = False
 
     def gunakan_skill_pasif(self, **kwargs):
         # siapin variabel dewa buat loop, kalau dewa gak jumpa
         # dewa tetap none(gak ada), ambil data dari kwargs buat liat isi tim_pemain
-        tim = kwargs.get('tim_pemain, {}')
+        tim = kwargs.get('tim_pemain', {})
         daftar_tim = tim.values() if hasattr(tim, 'values') else tim # gini aja biar ringkas
         
         dewa = None
         for char in daftar_tim:
             # Pastikan char adalah objek dan memiliki atribut nama
-            if hasattr(char, 'nama') and char.nama.lower() == 'dewa' and char.hp > 0:
-                dewa = char # karna dewa jumpa, dan masih hidup, jadi key-nya di aktifkan
-                break
+            if hasattr(char, 'nama') and char.nama.lower() == 'dewa':
+                if getattr(char, 'hp', 0) > 0:
+                    dewa = char # karna dewa jumpa, dan masih hidup, jadi key-nya di aktifkan
+                    break
 
         if dewa:
             if self.sudah_depresi:

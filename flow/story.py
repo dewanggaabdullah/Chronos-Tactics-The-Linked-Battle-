@@ -108,11 +108,11 @@ def prolog(durasi = 0.5):
     print()
     print()
     print('<< tekan spasi untuk skip keluarnya text >>')
-    print('\n' + '='*55 + '\n') # biar rapi
+    print('\n' + '='*49 + '\n') # biar rapi
 
     # ambil isi dictionary cerita_karakter buat di tampilkan ke layar
     for text in cerita_karakter.values():
         print_story(text)
-        print('\n' + '='*55 + '\n') # biar rapi
+        print('\n' + '='*49 + '\n') # biar rapi
         time.sleep(durasi)
 

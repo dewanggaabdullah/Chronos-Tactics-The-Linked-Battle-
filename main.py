@@ -22,7 +22,7 @@ def main_menu():
         print('\npilih angka pada nomor diatas sebagai input...')
 
         def game_dimulai():
-            st.prolog()
+            # st.prolog()
             en.inisialisasi_karakter()
 
         def settings():
@@ -33,7 +33,7 @@ def main_menu():
             print("2. Sound: Off")
 
         try:
-            pilih = input("Pilih (1-3): ")
+            pilih = '1' #input("Pilih (1-3): ")
 
             pilihan_user = {
                 '1': game_dimulai,

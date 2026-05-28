@@ -2,6 +2,8 @@ from flow import units as un
 from flow import char_choice as cc
 from flow import utils as ut
 from flow import story as st
+from history import node as no
+from history import rewind as re
    
 def inisialisasi_karakter():
     global tim_pemain, monster
@@ -18,15 +20,16 @@ def inisialisasi_karakter():
         monster = un.Monster('ORC GURUN', 250)
 
     def jalankan_game(tim_pemain, monster):
+        history = no.TurnHistory()
+        nomor_turn = 1
 
         # =========================================================================
         # FASE 1: AWAL TURN (Pasif jalan di sini, CUMA SEKALI PER ROUND)
         # =========================================================================
 
         # --- DI LUAR CLASS, SEBELUM LOOP PERTARUNGAN ---
-        
         for karakter in tim_pemain.values():
-        # Variabel 'karakter' di bawah ini adalah pancingan objek aslinya
+            # Variabel 'karakter' di bawah ini adalah pancingan objek aslinya
             karakter.setup_statistik_awal()
             
         # -----------------------------------------------
@@ -37,10 +40,13 @@ def inisialisasi_karakter():
         print(st.kedatangan_monster.format(monster = monster.nama))
 
         while monster.hp > 0:
+            # [PENTING] 1. Catat state awal turn tepat di sini sebelum ada aksi/perubahan status
+            history.catat_turn(nomor_turn, tim_pemain, monster)
+
             # jalankan semua efek pasif heal/buffer di awal turn, seperti elsa
             for char in tim_pemain.values():
                 # setiap char yang punya skill pasif positif, jalanin duluan
-                if hasattr(char, 'aktifkan_pasif'):
+                if char.hp > 0 and hasattr(char, 'aktifkan_pasif'):
                     char.aktifkan_pasif(tim_pemain)
 
             # cek anggota hidup
@@ -56,14 +62,19 @@ def inisialisasi_karakter():
 
             for char in tim_pemain.values():
                 # kita jalanin pasif universal, kaya dewa dan mikasa
-                char.jalankan_pasif(target = target,tim_pemain = tim_pemain)
+                if char.hp > 0:
+                    char.jalankan_pasif(target = target,tim_pemain = tim_pemain)
+                else:
+                    # kalau mati, lewati aja
+                    pass
+            else:
+                pass
 
             # =========================================================================
             # FASE 2: INPUT PLAYER (Loop ini mengunci player sampai inputnya benar)
             # =========================================================================
 
             while True:
-
                 # siapkan baris status buat anggota tim
                 status_anggota = []
                 for i, k in enumerate(tim_pemain.values(), 1):
@@ -88,6 +99,7 @@ def inisialisasi_karakter():
 
 
                 # Cetak Tabel (Hanya Satu Kali per ronde)
+                print(f'putaran - ( {nomor_turn} )') # Menggunakan variabel nomor_turn lokal
                 print("\n╔═══════════════════════╗")
                 print("║      STATUS UNIT      ║")
                 print("╠═══════════════════════╣")
@@ -106,14 +118,36 @@ def inisialisasi_karakter():
                 
                 print("╚═══════════════════════╝")
 
-                # pilihan aksi yang dapat dipilih pemain
-                aksi = input('\n[i] Pilih nama karakter untuk menyerang/menggunakan skill, atau ketik "kabur" buat melarikan diri\n>>>  ').lower().strip()
+                # pilihan aksi yang dapat dipilih pemain (Ditambahkan opsi "rewind")
+                aksi = input('\n[i] Ketik nama karakter untuk menyerang/skill, "rewind" untuk putar waktu, atau "kabur"\n>>>  ').lower().strip()
 
                 if aksi == 'kabur':
                     ut.bersihkan_terminal()
                     print(st.kabur)
                     print()
                     return
+
+                # [PENTING] Proses pemanggilan menu rewind interaktif pynput
+                if aksi == 'rewind':
+                    import copy
+                    turn_terpilih = re.menu_interaktif(history, ut)
+                    
+                    if turn_terpilih:
+                        # Kembalikan seluruh state game ke turn terpilih
+                        tim_pemain = copy.deepcopy(turn_terpilih.data_tim)
+                        monster = copy.deepcopy(turn_terpilih.data_monster)
+                        nomor_turn = turn_terpilih.nomor_turn
+                        
+                        ut.bersihkan_terminal()
+                        print(f"\n[!] Waktu berhasil diputar kembali ke Turn {nomor_turn}!")
+                        input("Tekan Enter untuk melanjutkan turn...")
+                        
+                        # Keluar dari while True input, langsung loncat ke awal while monster.hp
+                        break 
+                    else:
+                        ut.bersihkan_terminal()
+                        print("\n[!] Rewind dibatalkan.")
+                        continue
 
                 # kalau pemain menyerang monster
                 if aksi in tim_pemain:
@@ -127,9 +161,11 @@ def inisialisasi_karakter():
                 else:
                     ut.bersihkan_terminal()
                     print(st.nama_char_tidak_ada) 
-                    # disini gak pakai format karna gak perlu
-                    #(gak ada kata khusus yang dinamis dan pakai {})
                     continue
+
+            # Jika user memilih rewind, kita skip eksekusi aksi di bawah dan langsung mengulang loop utama
+            if aksi == 'rewind' and turn_terpilih:
+                continue
 
             # =========================================================================
             # FASE 3: EKSEKUSI AKSI & BALASAN MONSTER
@@ -150,7 +186,7 @@ def inisialisasi_karakter():
 
                 if karakter.hp <= 0:
                     print()
-                    print(st.karakter.kalah.format(nama = karakter.nama))
+                    print(st.karakter_kalah.format(nama = karakter.nama))
                 else:
                     print()
                     print(st.karakter_diserang.format(nama = karakter.nama, hp = karakter.hp))
@@ -159,12 +195,12 @@ def inisialisasi_karakter():
             # FASE AKHIR: AKHIR BABAK/ SEBELUM RONDE BERIKUTNYA
             # =========================================================================
 
-            for char in tim_pemain_values():
+            for char in tim_pemain.values(): # Memperbaiki typo tim_pemain_values() -> tim_pemain.values()
                 # cek char masih hidup dan punya skill aktif/pasif yang cooldown 
                 if hasattr(char, 'cooldown') and char.hp > 0:
                     char.kurangi_cooldown()
+                    
+            # [PENTING] Tambah hitungan nomor turn untuk babak berikutnya
+            nomor_turn += 1
 
     jalankan_game(tim_pemain, monster)
-    
-
-
