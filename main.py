@@ -1,70 +1,84 @@
-# modul error handling
-import traceback
-        
-from flow import engine as en
+from flow import units as un
+from flow import char_choice as cc
 from flow import utils as ut
 from flow import story as st
-from flow import char_choice as cc
+from history import node as no
+import copy
 
-def main_menu():
-    ut.bersihkan_terminal()
-    while True:
-        print('==={ CRONOS TACTICS: The Linked Battle }===')
-        print()
-        print("           ╔══════════════════╗")
-        print("           ║   GAME MENU      ║")
-        print("           ╠══════════════════╣")
-        print("           ║ 1. Mulai         ║")
-        print("           ║ 2. Settings      ║")
-        print("           ║ 3. Keluar        ║")
-        print("           ╚══════════════════╝")
+# Variabel Global untuk menyimpan status game
+game_state = {
+    "tim_pemain": None,
+    "monster": None,
+    "history": None,
+    "nomor_turn": 1,
+    "game_active": False
+}
 
-        print('\npilih angka pada nomor diatas sebagai input...')
-
-        def game_dimulai():
-            # st.prolog()
-            en.inisialisasi_karakter()
-
-        def settings():
-        #ini sekarang gak ada gunanya,hanya formalitas,mungkin nanti dikembangkan
-            ut.bersihkan_terminal()
-            print("=== SETTINGS ===")
-            print("1. Difficulty: indonesia")
-            print("2. Sound: Off")
-
-        try:
-            pilih = '1' #input("Pilih (1-3): ")
-
-            pilihan_user = {
-                '1': game_dimulai,
-                '2': settings
-            }
+def inisialisasi_game():
+    global game_state
+    daftar_karakter = cc.validasi_karakter()
+    if daftar_karakter:
+        game_state["tim_pemain"] = cc.pemilihan_karakter(*daftar_karakter)
+        game_state["monster"] = un.Monster('ORC GURUN', 250)
+        game_state["history"] = no.TurnHistory()
+        game_state["nomor_turn"] = 1
+        game_state["game_active"] = True
         
-            if pilih in pilihan_user:
-                eksekusi = pilihan_user[pilih]  # Ambil 'alamat' fungsi
-                eksekusi()                      # DI SINI KASIH PARAMETER/KURUNG.lower()
-            elif pilih == '3':
-                ut.bersihkan_terminal()
-                print("Bye bye!\n")
-                break
+        # Setup statistik awal
+        for karakter in game_state["tim_pemain"].values():
+            karakter.setup_statistik_awal()
+        return "Game Dimulai!"
+    return "Gagal inisialisasi karakter."
+
+def proses_aksi(aksi):
+    """Fungsi ini dipanggil oleh Flask saat tombol ditekan"""
+    global game_state
+    if not game_state["game_active"]:
+        return "Game belum dimulai."
+
+    tim = game_state["tim_pemain"]
+    monster = game_state["monster"]
+    history = game_state["history"]
+
+    # 1. Catat History
+    history.catat_turn(game_state["nomor_turn"], tim, monster)
+
+    # 2. Pasif & Logika Turn
+    # (Pindahkan logika pasif dari loop utama ke sini)
+    for char in tim.values():
+        if char.hp > 0 and hasattr(char, 'aktifkan_pasif'):
+            char.aktifkan_pasif(tim)
+
+    # 3. Handle Aksi
+    pesan = ""
+    if aksi == 'kabur':
+        game_state["game_active"] = False
+        return "Kamu melarikan diri!"
+
+    if aksi in tim:
+        karakter = tim[aksi]
+        if karakter.hp > 0:
+            # Eksekusi Aksi
+            if karakter.skill_pasif:
+                pesan = karakter.menyerang(monster)
             else:
-                raise ValueError
+                karakter.skill_aktif(monster=monster, tim_pemain=tim)
+            
+            # Balasan Monster
+            if monster.hp > 0:
+                pesan += f" | Monster menyerang {karakter.nama}!"
+                monster.menyerang(karakter)
+            
+            # Akhir Turn
+            game_state["nomor_turn"] += 1
+        else:
+            pesan = "Karakter sudah mati!"
+    else:
+        pesan = "Aksi tidak dikenal."
 
-        except NameError:
-            traceback.print_exc()
-        except ValueError:
-            print('harap masukkan nomor menu yang benar...')   
-        except Exception as e:
-            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n')
-            traceback.print_exc() # ini bakal nampilin tulisan error traceback buat mempermudah debug
-
-        try:
-            input("\n<< Tekan Enter buat kembali ke menu >> ")
-        except EOFError:
-            print('output habis')
-
-ut.bersihkan_terminal()
-main_menu()
-
-
-
+    # Cek Kondisi Menang/Kalah
+    if monster.hp <= 0:
+        game_state["game_active"] = False
+        pesan += " Kamu Menang!"
+        
+    return pesan

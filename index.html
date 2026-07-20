@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>CRONOS TACTICS</title>
+    <style>
+        body { background-color: #000000; color: #ffffff; text-align: center; font-family: Arial; }
+        .container { margin-top: 100px; }
+        button { padding: 15px 30px; margin: 10px; cursor: pointer; background: #fff; border: none; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CRONOS TACTICS: The Linked Battle</h1>
+        
+        <!-- Tombol untuk memicu fungsi di Python -->
+        <button onclick="kirimPilihan('1')">Mulai Game</button>
+        <button onclick="kirimPilihan('2')">Settings</button>
+        
+        <p id="status"></p>
+    </div>
+
+    <script>
+        function kirimPilihan(option) {
+            fetch('/jalankan_game', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'menu_option=' + option
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status').innerText = data.message;
+            });
+        }
+    </script>
+</body>
+</html>
