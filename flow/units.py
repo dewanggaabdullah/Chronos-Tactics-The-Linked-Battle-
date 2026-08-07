@@ -22,6 +22,7 @@ class Dasar_Karakter:
             damage = self.atk,
         )
 
+
     def menerima_serangan(self, damage):
         self.hp -= damage
 
@@ -31,6 +32,7 @@ class Dasar_Karakter:
 
         return st.karakter_diserang.format(nama = self.nama, hp = self.hp), True
 
+
     def jalankan_pasif(self, **kwargs):
         """
         kwargs akan menampung apapun yang dikasih,target, tim pemain, musuh, dll
@@ -39,9 +41,11 @@ class Dasar_Karakter:
             # teruskan **kwargs ke fungsi logika
             self.gunakan_skill_pasif(**kwargs)
 
+
     def skill_pasif(self, **kwargs):
         """fungsi ini nanti akan diisi oleh char pasif"""
         pass
+
 
     def skill_aktif(self, **kwargs):
         """
@@ -82,12 +86,14 @@ class Dasar_Karakter:
             print(self.menyerang(target))
             return False
 
+
     def kurangi_cooldown(self):
         """
         fungsi universal, buat dipakein super(). di char yang butuh
         """
         if self.cooldown > 0:
             self.cooldown -= 1
+
 
     def setup_statistik_awal(self):
         """
@@ -104,12 +110,14 @@ class Dasar_Karakter:
     gak perlu dipanggil, maka dia gak masuk menu kaya karakter aktif
     """
 
+
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         # aku pakai super() biar ngambil apa yang dasar karakter isi di __init__nya
         super().__init__ (nama, hp, atk) 
         self.healing = 7
         self.skill_pasif = True
+
 
     def gunakan_skill_pasif(self, **kwargs):
         # elsa mengambil paket dari yang kita bikin
@@ -129,11 +137,13 @@ class Elsa(Dasar_Karakter):
     apakah user mau basic attack, atau mau pakai skill aktifnya
     """
 
+
 class Bruno(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
         self.cooldown = 0
         self.menangkis = False # status awal
+
 
     def gunakan_skill(self, **kwargs):
         if self.cooldown == 0:
@@ -143,6 +153,7 @@ class Bruno(Dasar_Karakter):
         else:
             print(st.skill_cooldown.format(nama = self.nama, cooldown = self.cooldown))
             return False
+
 
     def menerima_serangan(self, damage):
         if  self.menangkis:
@@ -156,6 +167,7 @@ class Bruno(Dasar_Karakter):
         # pas udah di manipulasi damagenya, baru serangan masuk
         return super().menerima_serangan(damage)
 
+
     def setup_statistik_awal(self):
         # kita jalanin reset dari dasar_karakter, baru yang lokal
         super().setup_statistik_awal()
@@ -163,8 +175,10 @@ class Bruno(Dasar_Karakter):
         # atur kondisi char biar tiga dan berkurang saat ronde berjalan
         self.cooldown = 0
 
+
     def kurangi_cooldown(self):
         super().kurangi_cooldown()
+
 
 class Dewa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -173,6 +187,7 @@ class Dewa(Dasar_Karakter):
         self.damage_dasar = atk # simpan nilai asli agar serangan bisa direset
         self.damage_critical = 40
         self.skill_pasif = True
+
 
     def gunakan_skill_pasif(self, **kwargs):
         musuh = kwargs.get('target')
@@ -193,6 +208,7 @@ class Dewa(Dasar_Karakter):
             self.atk = self.damage_dasar
             return False 
 
+
     def setup_statistik_awal(self):
         # kita jalanin reset dari dasar_karakter, baru yang lokal
         super().setup_statistik_awal()
@@ -200,11 +216,13 @@ class Dewa(Dasar_Karakter):
         # atur kondisi char biar tiga dan berkurang saat ronde berjalan
         self.cooldown = 3
 
+
     def kurangi_cooldown(self):
         super().kurangi_cooldown()
 
 # sistem cooldown joy beda sama punya dewa, kalau dewa charging, namun joy bisa
 # dipakai langsung di awal pertarungan
+
 
 class Joy(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -212,6 +230,7 @@ class Joy(Dasar_Karakter):
         self.suntik_daya_tahan = 20
         self.cooldown = 0
         self.skill_pasif = False
+
 
     def gunakan_skill(self, **kwargs):
         # joy mengambil paket dari yang kita bikin
@@ -237,6 +256,7 @@ class Joy(Dasar_Karakter):
             print(st.skill_cooldown.format(nama = self.nama, cooldown = self.cooldown))
             return False
 
+
     def setup_statistik_awal(self):
         # kita jalanin reset dari dasar_karakter, baru yang lokal
         super().setup_statistik_awal()
@@ -244,8 +264,10 @@ class Joy(Dasar_Karakter):
         # atur kondisi char biar nol dan bisa langsung dipakai
         self.cooldown = 0
 
+
     def kurangi_cooldown(self):
         super().kurangi_cooldown()
+
 
 class Mikasa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
@@ -257,6 +279,7 @@ class Mikasa(Dasar_Karakter):
         self.mode_ngamuk = False
         self.skill_pasif = True
         self.sudah_depresi = False
+
 
     def gunakan_skill_pasif(self, **kwargs):
         # siapin variabel dewa buat loop, kalau dewa gak jumpa
@@ -322,7 +345,6 @@ class Mikasa(Dasar_Karakter):
         # supaya sistem tahu "skill pasif" sudah diproses
         return True
 
-#monster
 
 class Monster(Dasar_Karakter):
     def __init__(self, nama, hp):
@@ -331,6 +353,7 @@ class Monster(Dasar_Karakter):
         self.daftar_atk = [40,15,17,13]
         self.index_serangan = 0 # pengarah balasan damage yang diberikan monster
        
+
     def menyerang(self, target):
         if self.hp > 0:
             # serangan yang mau di kasih monster di arahin pakai index_serangan
@@ -352,6 +375,7 @@ class Monster(Dasar_Karakter):
 
         else:            
             print(f'{self.nama} sudah kalah dan tidak bisa menyerang.')
+
 
 # setelah permainan berakhir, pakai fungsi ini buat riset
 def reset_entitas():

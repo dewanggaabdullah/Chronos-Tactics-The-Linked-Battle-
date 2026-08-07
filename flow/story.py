@@ -1,15 +1,11 @@
-# module built-in
 import time
 import textwrap
 import sys
 
-# module library
 from pynput import keyboard
 
-# module bikin
 from flow import utils as ut
 
-# story setiap karakter
 cerita_karakter = {
     'elsa': "-- elsa --\n    elsa merupakan seorang gadis manis yang suka membantu teman-temannya dan bercita cita menjadi dokter yang manis pula.\nSTATISTIK:\nhp: 75\natk: 5\nkemampuan:  dapat menambah hp rekan tiap ronde sebanyak 7",
     'bruno': "-- bruno --\n    dia seorang anak kuat yang hobi nge-gym dan suka melakukan aktifitas fisik berat.\nSTATISTIK:\nhp: 150\natk: 9\nkemampuan:  punya barbel raksasa yang dapat menangkis serangan monster apapun dengan tidak melakukan penyerangan saat ronde berlangsung",
@@ -18,7 +14,6 @@ cerita_karakter = {
     'mikasa': "-- mikasa --\n    mikasa seorang anak yatim piatu yang dulunya terlantar di alun-alun kota. keluarga dewa mengadopsinya dan menganggapnya sebagai anak sendiri dan jadi saudara angkat bagi dewa. tidak tau kenapa, tapi mikasa sangat kuat dan lincah saat bertengkar dengan bruno dan hampir mengalahkannya demi dewa saat dewa berselisih dengan bruno dulu, padahal dia tidak pernah latihan fisik sangat keras seperti bruno.\nSTATISTIK:\nhp: 90\natk: 10\nkemampuan:  saat bersama dewa, poin serangan mikasa bertambah sebanyak 10 poin dan saat hp dewa berada di bawah 30, seluruh poin serangan mikasa meningkat sebanyak 100 persen"
 } 
 
-# wadah pemberitahuan umum in-game, aku pakai sistem format biar clean
 # ofensif
 tim_menyerang = "\n[x] {nama} menyerang! memberikan damage sebesar {damage}."
 monster_menyerang = '\n[x] {monster} mulai menyerang...!, kali ini serangannya menghasilkan kerusakan setara {damage} untuk {target}'
@@ -38,12 +33,6 @@ kedatangan_monster = '\n[!] sebuah {monster} muncul di perjalanan...!'
 nama_char_tidak_ada = '\n[?] nama tersebut tidak ada di dalam tim atau salah ketik'
 skill_cooldown = '\n[!] skill {nama} lagi cooldown, skill akan terbuka {cooldown} ronde lagi '
 
-# [i] = input pemain dari terminal
-# [!] = momen penting
-# [X] = info pertarungan(serangan)
-# [-] = info pertarungan(menerima serangan)
-# [*] = skill karakter
-# [lol] = tolol(tertawa terbahak-bahak)
 
 def print_story(text, speed='normal'):
     skip = False
@@ -93,6 +82,7 @@ def print_story(text, speed='normal'):
     # kalau gunanya .stop() buat berhentiin listener mantau input sesudah loop selesai kasih output
     if listener.running:
         listener.stop()
+
 
 def prolog(durasi = 0.5):
     ut.bersihkan_terminal()
