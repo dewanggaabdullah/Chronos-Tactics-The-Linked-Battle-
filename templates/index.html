@@ -4,33 +4,79 @@
     <meta charset="UTF-8">
     <title>CRONOS TACTICS</title>
     <style>
-        body { background-color: #000000; color: #ffffff; text-align: center; font-family: Arial; }
-        .container { margin-top: 100px; }
+        body { background-color: #000000; color: #ffffff; text-align: center; font-family: Arial; margin-top: 50px; }
+        .container { max-width: 600px; margin: 0 auto; }
         button { padding: 15px 30px; margin: 10px; cursor: pointer; background: #fff; border: none; border-radius: 5px; font-weight: bold; }
+        button:hover { background: #ddd; }
+        #status { margin-top: 20px; font-size: 18px; color: #00ffcc; white-space: pre-line; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>CRONOS TACTICS: The Linked Battle</h1>
         
-        <!-- Tombol untuk memicu fungsi di Python -->
-        <button onclick="kirimPilihan('1')">Mulai Game</button>
-        <button onclick="kirimPilihan('2')">Settings</button>
-        
-        <p id="status"></p>
+        <!-- Menu Utama (Hanya Mulai Game dan Settings) -->
+        <div id="menu-utama">
+            <button onclick="mulaiGame()">Mulai Game</button>
+            <button onclick="bukaSettings()">Settings</button>
+        </div>
+
+        <!-- Tombol Aksi Pertarungan (Awalnya disembunyikan, muncul setelah game dimulai) -->
+        <div id="menu-game" class="hidden">
+            <button onclick="kirimAksi('elsa')">Serang dengan Elsa</button>
+            <button onclick="kirimAksi('bruno')">Serang dengan Bruno</button>
+            <button onclick="kirimAksi('kabur')">Kabur</button>
+        </div>
     </div>
 
     <script>
-        function kirimPilihan(option) {
-            fetch('/jalankan_game', {
+        function mulaiGame() {
+            fetch('/aksi', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'menu_option=' + option
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ aksi: 'mulai' })
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('status').innerText = data.message;
-            });
+                document.getElementById('status').innerText = data.log;
+                // Sembunyikan menu utama, tampilkan menu game/aksi
+                document.getElementById('menu-utama').classList.add('hidden');
+                document.getElementById('menu-game').classList.remove('hidden');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function bukaSettings() {
+            // Sembunyikan menu utama, tampilkan sub-menu settings
+            document.getElementById('menu-utama').classList.add('hidden');
+            document.getElementById('menu-settings').classList.remove('hidden');
+            document.getElementById('status').innerText = "Silakan pilih opsi pengaturan:";
+        }
+
+        function pilihSubSettings(namaFitur) {
+            document.getElementById('status').innerText = `Fitur ${namaFitur} masih tahap pengembangan.`;
+        }
+
+        function kembaliKeMenuUtama() {
+            // Sembunyikan settings, tampilkan kembali menu utama
+            document.getElementById('menu-settings').classList.add('hidden');
+            document.getElementById('menu-utama').classList.remove('hidden');
+            document.getElementById('status').innerText = "Silakan pilih menu untuk memulai.";
+        }
+
+        function kirimAksi(option) {
+            fetch('/aksi', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ aksi: option })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let teksLog = `Log: ${data.log}\nHP Monster: ${data.hp_monster} | Turn: ${data.turn}`;
+                document.getElementById('status').innerText = teksLog;
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </body>
