@@ -1,83 +1,84 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
-    <title>CRONOS TACTICS</title>
-    <style>
-        body { background-color: #000000; color: #ffffff; text-align: center; font-family: Arial; margin-top: 50px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        button { padding: 15px 30px; margin: 10px; cursor: pointer; background: #fff; border: none; border-radius: 5px; font-weight: bold; }
-        button:hover { background: #ddd; }
-        #status { margin-top: 20px; font-size: 18px; color: #00ffcc; white-space: pre-line; }
-        .hidden { display: none; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chronos Tactics: The Linked Battle</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
 </head>
+
 <body>
-    <div class="container">
+
+    <main class="container">
+
         <h1>CRONOS TACTICS: The Linked Battle</h1>
-        
-        <!-- Menu Utama (Hanya Mulai Game dan Settings) -->
-        <div id="menu-utama">
-            <button onclick="mulaiGame()">Mulai Game</button>
-            <button onclick="bukaSettings()">Settings</button>
-        </div>
 
-        <!-- Tombol Aksi Pertarungan (Awalnya disembunyikan, muncul setelah game dimulai) -->
-        <div id="menu-game" class="hidden">
-            <button onclick="kirimAksi('elsa')">Serang dengan Elsa</button>
-            <button onclick="kirimAksi('bruno')">Serang dengan Bruno</button>
-            <button onclick="kirimAksi('kabur')">Kabur</button>
-        </div>
-    </div>
+        <!-- Log internal, tidak terlihat pemain -->
+        <div id="status" class="hidden"></div>
 
-    <script>
-        function mulaiGame() {
-            fetch('/aksi', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ aksi: 'mulai' })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('status').innerText = data.log;
-                // Sembunyikan menu utama, tampilkan menu game/aksi
-                document.getElementById('menu-utama').classList.add('hidden');
-                document.getElementById('menu-game').classList.remove('hidden');
-            })
-            .catch(error => console.error('Error:', error));
-        }
+        <!-- Pesan yang ditampilkan kepada pemain -->
+        <div id="pesan-pemain"></div>
 
-        function bukaSettings() {
-            // Sembunyikan menu utama, tampilkan sub-menu settings
-            document.getElementById('menu-utama').classList.add('hidden');
-            document.getElementById('menu-settings').classList.remove('hidden');
-            document.getElementById('status').innerText = "Silakan pilih opsi pengaturan:";
-        }
 
-        function pilihSubSettings(namaFitur) {
-            document.getElementById('status').innerText = `Fitur ${namaFitur} masih tahap pengembangan.`;
-        }
+        <!-- ==================================================
+             MENU UTAMA
+        =================================================== -->
 
-        function kembaliKeMenuUtama() {
-            // Sembunyikan settings, tampilkan kembali menu utama
-            document.getElementById('menu-settings').classList.add('hidden');
-            document.getElementById('menu-utama').classList.remove('hidden');
-            document.getElementById('status').innerText = "Silakan pilih menu untuk memulai.";
-        }
+        <section id="menu-utama">
 
-        function kirimAksi(option) {
-            fetch('/aksi', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ aksi: option })
-            })
-            .then(response => response.json())
-            .then(data => {
-                let teksLog = `Log: ${data.log}\nHP Monster: ${data.hp_monster} | Turn: ${data.turn}`;
-                document.getElementById('status').innerText = teksLog;
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
+            <button onclick="mulaiGame()">
+                Mulai Game
+            </button>
+
+            <button onclick="bukaSettings()">
+                Settings
+            </button>
+
+        </section>
+
+
+        <!-- ==================================================
+            PROLOG-SETELAH-MULAI-GAME
+        ================================================== -->
+
+        <section id="prolog" class="hidden">
+
+            <div id="teks-prolog"></div>
+
+        </section>
+
+        <!-- ==================================================
+             MENU SETTINGS
+        =================================================== -->
+
+        <section id="menu-settings" class="hidden">
+
+            <button onclick="pilihSubSettings('Audio')">
+                Audio
+            </button>
+
+            <button onclick="pilihSubSettings('Grafis')">
+                Grafis
+            </button>
+
+            <button onclick="kembaliKeMenuUtama()">
+                Kembali
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- JavaScript aplikasi -->
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+
 </body>
+
 </html>
