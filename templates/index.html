@@ -19,12 +19,7 @@
 
         <h1>CRONOS TACTICS: The Linked Battle</h1>
 
-        <!-- Log internal, tidak terlihat pemain -->
-        <div id="status" class="hidden"></div>
-
-        <!-- Pesan yang ditampilkan kepada pemain -->
         <div id="pesan-pemain"></div>
-
 
         <!-- ==================================================
              MENU UTAMA
@@ -44,18 +39,96 @@
 
 
         <!-- ==================================================
-            PROLOG-SETELAH-MULAI-GAME
+             PROLOG
         ================================================== -->
 
         <section id="prolog" class="hidden">
 
+            <!-- Teks cerita dan deskripsi karakter -->
             <div id="teks-prolog"></div>
+
+            <div id="pilihan-karakter">
+
+                <button>
+                    Elsa
+                </button>
+
+                <button>
+                    Bruno
+                </button>
+
+                <button>
+                    Dewa
+                </button>
+
+                <button>
+                    Joy
+                </button>
+
+                <button>
+                    Mikasa
+                </button>
+
+            </div>
+
+            <div id="navigasi-prolog">
+
+                <button onclick="kembaliKeMenuUtama()">
+                    Kembali
+                </button>
+
+            </div>
 
         </section>
 
+
+        <!-- ==================================================
+             MENU PEMILIHAN KARAKTER
+        ================================================== -->
+
+        <section id="menu-pemilihan-karakter" class="hidden">
+
+            <button>Elsa</button>
+            <button>Bruno</button>
+            <button>Dewa</button>
+            <button>Joy</button>
+            <button>Mikasa</button>
+
+            <button onclick="kembaliKeProlog()">
+                Kembali
+            </button>
+
+        </section>
+
+
+        <!-- ==================================================
+             MENU GAME
+        ================================================== -->
+
+        <section id="menu-game" class="hidden">
+
+            <button onclick="kirimAksi('elsa')">
+                Serang dengan Elsa
+            </button>
+
+            <button onclick="kirimAksi('bruno')">
+                Serang dengan Bruno
+            </button>
+
+            <button onclick="kirimAksi('kabur')">
+                Kabur
+            </button>
+
+            <button onclick="kembaliKeMenuUtama()">
+                Kembali
+            </button>
+
+        </section>
+
+
         <!-- ==================================================
              MENU SETTINGS
-        =================================================== -->
+        ================================================== -->
 
         <section id="menu-settings" class="hidden">
 
@@ -76,8 +149,13 @@
     </main>
 
 
-    <!-- JavaScript aplikasi -->
-    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script src="{{ url_for('static', filename='js/main_menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/game_menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/settings_menu.js') }}"></script>
 
 </body>
 
