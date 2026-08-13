@@ -1,5 +1,4 @@
 import traceback
-from flow import utils as ut
 from flow import story as st
 
 #karakter
@@ -249,7 +248,6 @@ class Joy(Dasar_Karakter):
 
             self.cooldown = 4 
 
-            ut.bersihkan_terminal()
             print(f"[*] {self.nama} memberikan suntikan! {self.suntik_daya_tahan} HP ditambahkan ke semua rekan.")
             return True
         else:

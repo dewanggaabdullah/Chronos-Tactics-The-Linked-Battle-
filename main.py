@@ -1,31 +1,42 @@
 from flask import Flask, render_template, request, jsonify
-from flow import engine as en
+
+from menu import main_menu
+from menu import game_menu
+from menu import settings_menu
+
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
-    # Inisialisasi awal saat halaman utama dibuka
-    en.inisialisasi_game()
     return render_template('index.html')
+
 
 @app.route('/aksi', methods=['POST'])
 def handle_aksi():
     data = request.json
     aksi_user = str(data.get('aksi', '')).lower()
-    
-    # Proses aksi lewat engine
-    hasil_log = en.proses_aksi(aksi_user)
-    
-    # Ambil data monster dan turn dengan aman
-    monster = en.game_state.get("monster")
-    hp_monster_val = monster.hp if monster else 0
-    
+
+    if aksi_user == 'mulai':
+        return jsonify(
+            main_menu.mulai_game()
+        )
+
+    if aksi_user in ('elsa', 'bruno', 'kabur'):
+        return jsonify(
+            game_menu.proses_aksi(aksi_user)
+        )
+
+    if aksi_user in ('audio', 'grafis'):
+        return jsonify(
+            settings_menu.proses_aksi(aksi_user)
+        )
+
     return jsonify({
-        "log": hasil_log,
-        "hp_monster": hp_monster_val,
-        "turn": en.game_state.get("nomor_turn", 1)
-    })
+        "error": "Aksi tidak dikenal"
+    }), 400
+
 
 if __name__ == '__main__':
     app.run(debug=True)

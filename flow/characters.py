@@ -1,18 +1,18 @@
-from flow import utils as ut
-from flow import units as un
+from flow import attributes as un
 import traceback
+import copy
+
 
 def pemilihan_karakter(k1, k2, k3):
     tim_pemain = {}
     for nama_input in [k1.lower(), k2.lower(), k3.lower()]:
         if nama_input in un.attribute_karakter:
-            karakter_class = un.attribute_karakter[nama_input]
-
-            tim_pemain[nama_input] = attribute_karakter
+            objek_karakter = un.attribute_karakter[nama_input]
+            tim_pemain[nama_input] = copy.deepcopy(objek_karakter)
 
     return tim_pemain
    
-   
+
 def validasi_karakter():
     while True:
         try:
@@ -38,7 +38,6 @@ def validasi_karakter():
                 return tim_pemain
             
             elif tanya == 'n':
-                ut.bersihkan_terminal()
                 return None
             
             else:

@@ -1,0 +1,139 @@
+/* ============================================================
+GLOBAL
+============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+}
+
+
+/* ============================================================
+CONTAINER
+============================================================ */
+
+.container {
+    width: 90%;
+    max-width: 700px;
+
+    text-align: center;
+}
+
+
+/* ============================================================
+JUDUL
+============================================================ */
+
+h1 {
+    margin-bottom: 30px;
+}
+
+
+/* ============================================================
+PESAN PEMAIN
+============================================================ */
+
+#pesan-pemain {
+    min-height: 80px;
+    margin-bottom: 20px;
+
+    white-space: pre-wrap;
+}
+
+
+/* ============================================================
+PROLOG
+============================================================ */
+
+#prolog {
+    text-align: left;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.karakter {
+    border-top: 1px solid #555;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.karakter:first-of-type {
+    border-top: none;
+    margin-top: 0;
+}
+
+
+/* ============================================================
+MENU
+============================================================ */
+
+#menu-utama,
+#menu-game,
+#menu-settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* ============================================================
+BUTTON
+============================================================ */
+
+button {
+    width: 220px;
+    padding: 10px 15px;
+
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+/* ============================================================
+UTILITAS
+============================================================ */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ============================================================
+   PILIHAN KARAKTER
+============================================================ */
+
+#pilihan-karakter {
+    display: grid;
+    grid-template-columns: repeat(2, 180px);
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+#pilihan-karakter button {
+    width: 180px;
+    padding: 12px 15px;
+
+    transform: skew(-8deg);
+
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#pilihan-karakter button:hover {
+    transform: skew(-8deg) scale(1.03);
+}

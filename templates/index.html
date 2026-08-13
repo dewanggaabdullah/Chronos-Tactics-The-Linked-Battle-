@@ -49,23 +49,23 @@
 
             <div id="pilihan-karakter">
 
-                <button>
+                <button onclick="pilihKarakter('elsa')">
                     Elsa
                 </button>
 
-                <button>
+                <button onclick="pilihKarakter('bruno')">
                     Bruno
                 </button>
 
-                <button>
+                <button onclick="pilihKarakter('dewa')">
                     Dewa
                 </button>
 
-                <button>
+                <button onclick="pilihKarakter('joy')">
                     Joy
                 </button>
 
-                <button>
+                <button onclick="pilihKarakter('mikasa')">
                     Mikasa
                 </button>
 
@@ -83,37 +83,12 @@
 
 
         <!-- ==================================================
-             MENU PEMILIHAN KARAKTER
-        ================================================== -->
-
-        <section id="menu-pemilihan-karakter" class="hidden">
-
-            <button>Elsa</button>
-            <button>Bruno</button>
-            <button>Dewa</button>
-            <button>Joy</button>
-            <button>Mikasa</button>
-
-            <button onclick="kembaliKeProlog()">
-                Kembali
-            </button>
-
-        </section>
-
-
-        <!-- ==================================================
              MENU GAME
         ================================================== -->
 
         <section id="menu-game" class="hidden">
 
-            <button onclick="kirimAksi('elsa')">
-                Serang dengan Elsa
-            </button>
-
-            <button onclick="kirimAksi('bruno')">
-                Serang dengan Bruno
-            </button>
+            <div id="aksi-karakter"></div>
 
             <button onclick="kirimAksi('kabur')">
                 Kabur
