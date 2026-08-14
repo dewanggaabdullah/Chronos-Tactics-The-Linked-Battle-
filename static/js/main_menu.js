@@ -58,5 +58,28 @@ function kembaliKeMenuUtama() {
 
 
 function pilihKarakter(nama) {
-    // nanti di sini kirim ke backend
+    fetch('/aksi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            aksi: 'pilih_karakter',
+            karakter: nama
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        const pesanPemain =
+            document.getElementById('pesan-pemain');
+
+        if (pesanPemain) {
+            pesanPemain.innerText = data.log;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
