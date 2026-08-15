@@ -249,3 +249,15 @@ Beberapa area yang sedang dikembangkan meliputi:
 Chronos-Tactics bukan hanya dibuat sebagai game, tetapi juga sebagai sarana untuk mempraktikkan bagaimana sebuah **game engine Python dapat dihubungkan dengan aplikasi web**.
 
 Melalui proyek ini, berbagai konsep software engineering diterapkan secara langsung dalam satu sistem, mulai dari OOP dan struktur data hingga state management, exception handling, dan web application development.
+
+
+## Lisensi
+
+Proyek ini menggunakan MIT License.
+
+Kamu diperbolehkan menggunakan, menyalin, memodifikasi,
+menggabungkan, menerbitkan, mendistribusikan, dan menggunakan
+proyek ini untuk tujuan komersial, selama pemberitahuan copyright
+dan lisensi tetap disertakan.
+
+Lihat file [LICENSE](LICENSE) untuk ketentuan lengkap.
