@@ -4,19 +4,20 @@ from flow.history import node as no
 import copy
 
 game_state = {
-    "tim_pemain": None,
+    "tim_pemain": {},
     "monster": None,
     "history": None,
-    "nomor_turn": 1,
+    "nomor_turn": 0,
     "game_active": False
 }
 
 
 def inisialisasi_game():
     global game_state
-    daftar_karakter = ['elsa', 'bruno', 'dewa']
     
-    game_state["tim_pemain"] = cc.pemilihan_karakter(*daftar_karakter)
+    # tim pemain masih dummy, karna masih tahap development(nanti dihapus)
+    # Tim pemain akan diisi melalui pemilihan karakter di web.
+    game_state["tim_pemain"] = {} # cc.pemilihan_karakter(*daftar_karakter)
     game_state["monster"] = un.Monster('ORC GURUN', 250)
     game_state["history"] = no.TurnHistory()
     game_state["nomor_turn"] = 1

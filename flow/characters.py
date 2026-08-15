@@ -1,55 +1,70 @@
 from flow import attributes as un
-import traceback
 import copy
 
 
-def pemilihan_karakter(k1, k2, k3):
+KARAKTER_VALID = [
+    "elsa",
+    "bruno",
+    "dewa",
+    "joy",
+    "mikasa"
+]
+
+
+def pemilihan_karakter(*nama_karakter):
+    """
+    Membuat tim pemain berdasarkan nama karakter.
+
+    Setiap karakter disalin dengan deepcopy agar
+    perubahan status selama permainan tidak mengubah
+    data karakter asli di attributes.py.
+    """
+
     tim_pemain = {}
-    for nama_input in [k1.lower(), k2.lower(), k3.lower()]:
-        if nama_input in un.attribute_karakter:
-            objek_karakter = un.attribute_karakter[nama_input]
-            tim_pemain[nama_input] = copy.deepcopy(objek_karakter)
+
+    for nama in nama_karakter:
+        nama = str(nama).lower()
+
+        if nama in un.attribute_karakter:
+            tim_pemain[nama] = copy.deepcopy(
+                un.attribute_karakter[nama]
+            )
 
     return tim_pemain
-   
 
-def validasi_karakter():
-    while True:
-        try:
-            tanya = 'y' 
-    
-            if tanya == 'y':
-                print()
-                nama_input1 = 'elsa' 
-                nama_input2 = 'bruno' 
-                nama_input3 = 'joy' 
-                
-                tim_pemain = [nama_input1, nama_input2, nama_input3]
 
-                if len(set(tim_pemain)) < 3 or "" in tim_pemain:
-                    raise ValueError('nama kembar atau kosong')
+def validasi_karakter(nama_karakter):
+    """
+    Memvalidasi satu nama karakter.
 
-                KARAKTER_VALID = ['elsa', 'bruno', 'dewa', 'joy', 'mikasa']
+    Mengembalikan True jika karakter tersedia.
+    """
 
-                for nama in tim_pemain:
-                    if nama not in KARAKTER_VALID:
-                        raise ValueError('karakter tidak valid')
-    
-                return tim_pemain
-            
-            elif tanya == 'n':
-                return None
-            
-            else:
-                print('pilih kembali ke menu dengan huruf "n", atau "y" untuk melanjutkan game.')
-                continue
-        
-        except ValueError as e:
-            if str(e) == "nama kembar atau kosong":
-                print('\n[!] Nama karakter tidak boleh sama atau ada yang kosong! Silakan pilih ulang.')
-            elif str(e) == "karakter_tidak_valid":
-                print(f'\n[!] Ada nama karakter yang tidak terdaftar! Karakter yang tersedia: {", ".join(KARAKTER_VALID).upper()}')
-        
-        except Exception as e:
-            print(f'ada kesalahan yang tak terduga... \npesan buat developer\n')
-            traceback.print_exc() 
+    nama_karakter = str(nama_karakter).lower()
+
+    return nama_karakter in KARAKTER_VALID
+
+
+def tambah_karakter_ke_tim(nama_karakter, tim_pemain):
+    nama_karakter = str(nama_karakter).lower()
+
+    if not validasi_karakter(nama_karakter):
+        return {
+            "berhasil": False,
+            "pesan": "Karakter tidak ditemukan."
+        }
+
+    if nama_karakter in tim_pemain:
+        return {
+            "berhasil": False,
+            "pesan": "Karakter sudah ada di dalam tim."
+        }
+
+    karakter = un.attribute_karakter[nama_karakter]
+
+    tim_pemain[nama_karakter] = copy.deepcopy(karakter)
+
+    return {
+        "berhasil": True,
+        "pesan": f"{nama_karakter} berhasil ditambahkan."
+    }
