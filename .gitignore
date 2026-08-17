@@ -1,4 +1,4 @@
-# cache proyek
+# cache
 __pycache__/
 main_menu/__pycache__
 flow/__pycache__
@@ -6,9 +6,12 @@ flow/node.py
 __pycache__/
 *.pyc
 
-# buat virtual environment
+# virtual environment
 venv/
 
-#folder vs code
+# vs code
 .vscode/
 .vscode
+
+# local
+zkode_lama/
