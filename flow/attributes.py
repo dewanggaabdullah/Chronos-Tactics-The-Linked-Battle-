@@ -1,398 +1,527 @@
-import traceback
-from flow import story as st
-
-#karakter
 class Dasar_Karakter:
     def __init__(self, nama, hp, atk):
         self.nama = nama
         self.hp = hp
         self.max_hp = hp
+
         self.atk = atk
         self.atk_dasar = atk
-        self.skill_pasif = False # buat default nya char gak punya pasif
 
+        # Default: karakter tidak memiliki skill pasif.
+        self.skill_pasif = False
 
     def menyerang(self, target):
-        """basic attack mengurangi hp target"""
-        damage = self.atk
-        target.menerima_serangan(damage)
-        return st.tim_menyerang.format(
-            nama = self.nama,
-            damage = self.atk,
-        )
+        """
+        Melakukan basic attack kepada target.
+        """
 
+        damage = self.atk
+        hasil_serangan = target.menerima_serangan(damage)
+
+        return {
+            "berhasil": True,
+            "aksi": "basic_attack",
+            "karakter": self.nama,
+            "damage": damage,
+            "target": target.nama,
+            "hasil_target": hasil_serangan
+        }
 
     def menerima_serangan(self, damage):
-        self.hp -= damage
+        """
+        Menerima damage dari target.
+        """
+
+        self.hp = max(0, self.hp - damage)
 
         if self.hp <= 0:
-            self.hp = 0
-            return st.karakter_kalah.format(nama = self.nama), False
+            return {
+                "berhasil": True,
+                "kalah": True,
+                "karakter": self.nama,
+                "hp": self.hp
+            }
 
-        return st.karakter_diserang.format(nama = self.nama, hp = self.hp), True
-
+        return {
+            "berhasil": True,
+            "kalah": False,
+            "karakter": self.nama,
+            "hp": self.hp
+        }
 
     def jalankan_pasif(self, **kwargs):
         """
-        kwargs akan menampung apapun yang dikasih,target, tim pemain, musuh, dll
+        Menjalankan passive skill jika karakter memilikinya.
         """
-        if self.skill_pasif:
-            # teruskan **kwargs ke fungsi logika
-            self.gunakan_skill_pasif(**kwargs)
 
+        if not self.skill_pasif:
+            return None
 
-    def skill_pasif(self, **kwargs):
-        """fungsi ini nanti akan diisi oleh char pasif"""
-        pass
+        fungsi_pasif = getattr(
+            self,
+            "gunakan_skill_pasif",
+            None
+        )
 
+        if not callable(fungsi_pasif):
+            return None
+
+        return fungsi_pasif(**kwargs)
 
     def skill_aktif(self, **kwargs):
         """
-        menu opsi pilihan char waktu karakter aktif dipanggil
+        Menjalankan active skill karakter.
+
+        Keputusan apakah pemain ingin menggunakan
+        basic attack atau skill aktif dilakukan oleh
+        layer game/UI, bukan oleh class karakter.
         """
-        # bongkar kwargs
-        target = kwargs.get('monster')
-        tim_pemain = kwargs.get('tim_pemain')
 
-        # nge check apakah ada fungsi "gunakan_skill_aktif" (kaya bruno)
-        fungsi_skill = getattr(self, 'gunakan_skill', None)
+        fungsi_skill = getattr(
+            self,
+            "gunakan_skill",
+            None
+        )
 
-        if self.gunakan_skill and callable(fungsi_skill):
-            while True:
-                print(f'\n--- putaran {self.nama} ---')
-                print('1. menyerang')
-                print('2. gunakan skill')
+        if not callable(fungsi_skill):
+            return {
+                "berhasil": False,
+                "aksi": "skill",
+                "alasan": "tidak_memiliki_skill_aktif"
+            }
 
-                pilih = input('pilih opsi berdasarkan nomor, ambil keputusanmu!...\n>>> ')
-                
-                if pilih == '1':
-                    print(self.menyerang(target))
-                    return False # giliran selesai
-
-                # pakai variabel yang udah didefinisikan dari kwargs
-                elif pilih == '2':
-                    status = fungsi_skill(target = target, tim_pemain = tim_pemain)
-
-                    if status: 
-                        return True # skill berhasil dijalankan
-                    
-                    else: 
-                        print(f"{self.nama} tidak punya skill aktif, otomatis menyerang!")
-                        print("Skill gagal/cooldown! Pilih lagi.")
-                        continue # skill cooldown atau gagal, ulangi menu
-        else:
-            # kalau char gak punya skill aktif, suruh pukul aja
-            print(self.menyerang(target))
-            return False
-
+        return fungsi_skill(**kwargs)
 
     def kurangi_cooldown(self):
         """
-        fungsi universal, buat dipakein super(). di char yang butuh
+        Mengurangi cooldown karakter jika tersedia.
         """
-        if self.cooldown > 0:
-            self.cooldown -= 1
 
+        cooldown = getattr(self, "cooldown", 0)
+
+        if cooldown > 0:
+            self.cooldown -= 1
 
     def setup_statistik_awal(self):
         """
-        Standar permainan: Mengembalikan semua buff/debuff 
-        dan modifikasi stat ke angka dasar asli mereka.
+        Mengembalikan statistik karakter ke kondisi awal.
         """
-        self.atk = self.atk_dasar
-        self.hp = self.max_hp
-        # Jika nanti ada stat lain seperti defense atau speed, reset juga di sini
-        # self.defense = self.defense_dasar
 
-    """
-    elsa punya pasif menyembuhkan, tapi tetap bisa mukul, jadi karna char jenis ini skill nya
-    gak perlu dipanggil, maka dia gak masuk menu kaya karakter aktif
-    """
+        self.hp = self.max_hp
+        self.atk = self.atk_dasar
 
 
 class Elsa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
-        # aku pakai super() biar ngambil apa yang dasar karakter isi di __init__nya
-        super().__init__ (nama, hp, atk) 
+        super().__init__(nama, hp, atk)
+
         self.healing = 7
         self.skill_pasif = True
 
-
     def gunakan_skill_pasif(self, **kwargs):
-        # elsa mengambil paket dari yang kita bikin
-        # di parameter ambil_tindakan pakai **kwargs
-        tim = kwargs.get('tim_pemain')
+        """
+        Elsa memulihkan HP anggota tim yang masih hidup
+        tetapi HP-nya belum penuh.
+        """
 
-        if tim:
-            for anggota in tim.values():
-                # pasif jalan kalau hp tim dibawah hp awalnya
-                if 0 < anggota.hp < anggota.max_hp:
-                    anggota.hp = min(anggota.hp + self.healing, anggota.max_hp)
+        tim = kwargs.get("tim_pemain")
 
-            print(f"\n[*] {self.nama} memberikan pemulihan pasif ke tim!")
+        if not tim:
+            return {
+                "berhasil": False,
+                "aksi": "passive",
+                "karakter": self.nama,
+                "alasan": "tim_kosong"
+            }
 
-    """
-    nah, kalau char jenis ini saat dipilih user, maka game akan masuk ke menu pemilihan
-    apakah user mau basic attack, atau mau pakai skill aktifnya
-    """
+        pemulihan = []
+
+        for anggota in tim.values():
+
+            if 0 < anggota.hp < anggota.max_hp:
+                hp_sebelum = anggota.hp
+
+                anggota.hp = min(
+                    anggota.hp + self.healing,
+                    anggota.max_hp
+                )
+
+                pemulihan.append({
+                    "karakter": anggota.nama,
+                    "hp_sebelum": hp_sebelum,
+                    "hp_sesudah": anggota.hp,
+                    "healing": anggota.hp - hp_sebelum
+                })
+
+        return {
+            "berhasil": True,
+            "aksi": "passive",
+            "karakter": self.nama,
+            "efek": "healing",
+            "jumlah_healing": self.healing,
+            "target": pemulihan
+        }
 
 
 class Bruno(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
-        self.cooldown = 0
-        self.menangkis = False # status awal
 
+        self.cooldown = 0
+        self.menangkis = False
 
     def gunakan_skill(self, **kwargs):
-        if self.cooldown == 0:
-            # bruno dalam mode fokus bertahan, jadi dia gak nyerang
-            self.menangkis = True
-            return True
-        else:
-            print(st.skill_cooldown.format(nama = self.nama, cooldown = self.cooldown))
-            return False
+        """
+        Mengaktifkan mode bertahan Bruno.
 
+        Bruno tidak menyerang pada turn ini.
+        Serangan monster berikutnya akan diblokir.
+        """
+
+        if self.cooldown > 0:
+            return {
+                "berhasil": False,
+                "aksi": "skill",
+                "karakter": self.nama,
+                "skill": "menangkis",
+                "alasan": "cooldown",
+                "cooldown": self.cooldown
+            }
+
+        self.menangkis = True
+
+        return {
+            "berhasil": True,
+            "aksi": "skill",
+            "karakter": self.nama,
+            "skill": "menangkis",
+            "status": "menangkis_aktif"
+        }
 
     def menerima_serangan(self, damage):
-        if  self.menangkis:
-            print(f'\n[*] {self.nama} memakai barbelnya...! menghalau serangan monster dengan barbel yang kelihatannya berat itu')
-            damage = 0 # buat damage jadi nol, agar tidak ngurangin hp bruno
-            self.menangkis = False
+        """
+        Bruno dapat membatalkan serangan monster
+        ketika mode menangkis aktif.
+        """
 
-            # balikin cooldownnya
+        if self.menangkis:
+
+            self.menangkis = False
             self.cooldown = 3
 
-        # pas udah di manipulasi damagenya, baru serangan masuk
+            return {
+                "berhasil": True,
+                "kalah": False,
+                "karakter": self.nama,
+                "hp": self.hp,
+                "damage_diterima": 0,
+                "serangan_diblokir": True,
+                "cooldown": self.cooldown
+            }
+
         return super().menerima_serangan(damage)
 
-
     def setup_statistik_awal(self):
-        # kita jalanin reset dari dasar_karakter, baru yang lokal
         super().setup_statistik_awal()
 
-        # atur kondisi char biar tiga dan berkurang saat ronde berjalan
         self.cooldown = 0
-
-
-    def kurangi_cooldown(self):
-        super().kurangi_cooldown()
-
-
-class Dewa(Dasar_Karakter):
-    def __init__(self, nama, hp, atk):
-        super().__init__(nama, hp, atk)
-        self.cooldown = 3
-        self.damage_dasar = atk # simpan nilai asli agar serangan bisa direset
-        self.damage_critical = 40
-        self.skill_pasif = True
-
-
-    def gunakan_skill_pasif(self, **kwargs):
-        musuh = kwargs.get('target')
-
-        if self.cooldown == 0:
-            self.atk = self.damage_critical # damage critical yang dikasih dewa
-
-            print(f"\n[*] !!! {self.nama} MENGELUARKAN SERANGAN CRITICAL... damage sebesar {self.atk} diberikan...!!!")
-            
-            # Kita tidak perlu memanggil self.menyerang(musuh) di sini
-            # karena Class Dasar akan memanggilnya setelah fungsi ini selesai.
-            # Cukup biarkan self.atk dalam kondisi tinggi saat fungsi ini berakhir.
-            
-            self.cooldown = 4
-            return True
-        else:
-            # jika belum seharusnya critical, atk harus kembali ke normal
-            self.atk = self.damage_dasar
-            return False 
-
-
-    def setup_statistik_awal(self):
-        # kita jalanin reset dari dasar_karakter, baru yang lokal
-        super().setup_statistik_awal()
-
-        # atur kondisi char biar tiga dan berkurang saat ronde berjalan
-        self.cooldown = 3
-
-
-    def kurangi_cooldown(self):
-        super().kurangi_cooldown()
-
-# sistem cooldown joy beda sama punya dewa, kalau dewa charging, namun joy bisa
-# dipakai langsung di awal pertarungan
+        self.menangkis = False
 
 
 class Joy(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
         super().__init__(nama, hp, atk)
+
         self.suntik_daya_tahan = 20
         self.cooldown = 0
         self.skill_pasif = False
 
-
     def gunakan_skill(self, **kwargs):
-        # joy mengambil paket dari yang kita bikin
-        # di parameter ambil_tindakan pakai **kwargs
-        tim = kwargs.get('tim_pemain')
+        """
+        Active skill Joy memberikan tambahan HP
+        kepada seluruh anggota tim yang masih hidup.
+        """
 
-        # kasih cooldown biar skill nya seimbang
-        # sekalian sama logika skill nya disini
-        if self.cooldown == 0:
-            if tim:
-                for anggota in tim.values():
-                    # kita sembuhin yang idup idup aja
-                    if anggota.hp > 0:
-                        # joy gak pakai batas max_hp, biar joy op
-                        anggota.hp += self.suntik_daya_tahan
+        tim = kwargs.get("tim_pemain")
 
-            self.cooldown = 4 
+        if self.cooldown > 0:
+            return {
+                "berhasil": False,
+                "aksi": "skill",
+                "karakter": self.nama,
+                "skill": "suntikan",
+                "alasan": "cooldown",
+                "cooldown": self.cooldown
+            }
 
-            print(f"[*] {self.nama} memberikan suntikan! {self.suntik_daya_tahan} HP ditambahkan ke semua rekan.")
-            return True
-        else:
-            print(st.skill_cooldown.format(nama = self.nama, cooldown = self.cooldown))
-            return False
+        if not tim:
+            return {
+                "berhasil": False,
+                "aksi": "skill",
+                "karakter": self.nama,
+                "skill": "suntikan",
+                "alasan": "tim_kosong"
+            }
 
+        penerima = []
+
+        for anggota in tim.values():
+            if anggota.hp > 0:
+                hp_sebelum = anggota.hp
+
+                anggota.hp += self.suntik_daya_tahan
+
+                penerima.append({
+                    "karakter": anggota.nama,
+                    "hp_sebelum": hp_sebelum,
+                    "hp_sesudah": anggota.hp,
+                    "healing": self.suntik_daya_tahan
+                })
+
+        self.cooldown = 4
+
+        return {
+            "berhasil": True,
+            "aksi": "skill",
+            "karakter": self.nama,
+            "skill": "suntikan",
+            "jumlah_healing": self.suntik_daya_tahan,
+            "target": penerima,
+            "cooldown": self.cooldown
+        }
 
     def setup_statistik_awal(self):
-        # kita jalanin reset dari dasar_karakter, baru yang lokal
         super().setup_statistik_awal()
 
-        # atur kondisi char biar nol dan bisa langsung dipakai
         self.cooldown = 0
 
 
-    def kurangi_cooldown(self):
-        super().kurangi_cooldown()
+class Dewa(Dasar_Karakter):
+    def __init__(self, nama, hp, atk):
+        super().__init__(nama, hp, atk)
+
+        self.cooldown = 3
+        self.damage_dasar = atk
+        self.damage_critical = 40
+        self.skill_pasif = True
+
+    def gunakan_skill_pasif(self, **kwargs):
+        """
+        Passive Dewa menentukan apakah basic attack
+        pada turn ini menjadi critical attack.
+        """
+
+        if self.cooldown == 0:
+            self.atk = self.damage_critical
+            self.cooldown = 4
+
+            return {
+                "berhasil": True,
+                "aksi": "passive",
+                "karakter": self.nama,
+                "efek": "critical",
+                "damage": self.damage_critical
+            }
+
+        # Jika belum siap critical, kembalikan ATK
+        # ke nilai dasarnya.
+        self.atk = self.damage_dasar
+
+        return {
+            "berhasil": False,
+            "aksi": "passive",
+            "karakter": self.nama,
+            "efek": None,
+            "cooldown": self.cooldown
+        }
+
+    def setup_statistik_awal(self):
+        super().setup_statistik_awal()
+
+        self.cooldown = 3
+        self.atk = self.damage_dasar
 
 
 class Mikasa(Dasar_Karakter):
     def __init__(self, nama, hp, atk):
-        super(). __init__(nama, hp, atk)
+        super().__init__(nama, hp, atk)
+
         self.bonus_serangan = 10
-        
-        # dekralasi awal buat nanti diubah jadi True, kalau dewa sama mikasa, dan hp dewa rendah
-        # kalau skill pasif harus true, karna skill mikasa pasif  
         self.mode_ngamuk = False
         self.skill_pasif = True
         self.sudah_depresi = False
-
+        self.bersama_dewa = False
 
     def gunakan_skill_pasif(self, **kwargs):
-        # siapin variabel dewa buat loop, kalau dewa gak jumpa
-        # dewa tetap none(gak ada), ambil data dari kwargs buat liat isi tim_pemain
-        tim = kwargs.get('tim_pemain', {})
-        daftar_tim = tim.values() if hasattr(tim, 'values') else tim # gini aja biar ringkas
-        
+        """
+        Passive Mikasa bergantung pada kondisi Dewa
+        di dalam tim pemain.
+
+        Kondisi:
+        1. Dewa hidup  -> Mikasa mendapat +10 ATK.
+        2. Dewa kritis -> Mikasa masuk mode ngamuk.
+        3. Dewa pulih  -> mode ngamuk berakhir.
+        4. Dewa mati/tidak ada -> Mikasa depresi.
+        """
+
+        tim = kwargs.get("tim_pemain", {})
+
         dewa = None
-        for char in daftar_tim:
-            # Pastikan char adalah objek dan memiliki atribut nama
-            if hasattr(char, 'nama') and char.nama.lower() == 'dewa':
-                if getattr(char, 'hp', 0) > 0:
-                    dewa = char # karna dewa jumpa, dan masih hidup, jadi key-nya di aktifkan
-                    break
+
+        for karakter in tim.values():
+            if karakter.nama.lower() == "dewa" and karakter.hp > 0:
+                dewa = karakter
+                break
+
+        # ==================================================
+        # DEWA MASIH HIDUP
+        # ==================================================
 
         if dewa:
-            if self.sudah_depresi:
-                self.sudah_depresi = false # reset status nya kalau dewa hidup/pulih lagi hp nya
 
-            # kondisi 1, mikasa dapat bonus atk karna ada dewa
-            if not hasattr(self, 'bersama_dewa'):
+            # Mikasa kembali mendapatkan hubungan dengan Dewa.
+            if not self.bersama_dewa:
                 self.atk += self.bonus_serangan
                 self.bersama_dewa = True
 
-            # kondisi 2, dewa sekarat --> mikasa mengamuk, atk nya dikali 2 biar makin op
+            # Jika sebelumnya depresi, pulihkan status depresi.
+            if self.sudah_depresi:
+                self.atk *= 2
+                self.sudah_depresi = False
+
+            # ==================================================
+            # DEWA KRITIS
+            # ==================================================
+
             if dewa.hp < 30 and not self.mode_ngamuk:
                 self.atk *= 2
                 self.mode_ngamuk = True
-                print('\n [*] !!! MIKASA MENGAMUK !!! {dewa.nama} kritis! serangan mikasa meningkat tajam ')
 
-            # kondisi 3, hp dewa balik ke atas 30 --> mikasa tenang, attribut ngamuknya hilang
+                return {
+                    "berhasil": True,
+                    "efek": "ngamuk",
+                    "karakter": self.nama,
+                    "log": (
+                        f"{self.nama} mengamuk karena "
+                        f"{dewa.nama} dalam kondisi kritis!"
+                    )
+                }
+
+            # ==================================================
+            # DEWA PULIH
+            # ==================================================
+
             if dewa.hp >= 30 and self.mode_ngamuk:
-                self.atk /= 2
+                self.atk //= 2
                 self.mode_ngamuk = False
-                print(f'\n [*] ...mikasa tenang... mode ngamuk {self.nama} mereda seiring {dewa.nama} membaik')
 
-            """
-            kondisi 4
-            kalau dewa mati, semua attribute mikasa hilang dan mengalami debuff parah
-            agar game jadi lebih taktis(dan juga agar dewa gak ditumbalin sampe mati)  ;)
-            """
+                return {
+                    "berhasil": True,
+                    "efek": "ngamuk_berakhir",
+                    "karakter": self.nama,
+                    "log": (
+                        f"{self.nama} kembali tenang karena "
+                        f"{dewa.nama} tidak lagi kritis."
+                    )
+                }
+
+        # ==================================================
+        # DEWA MATI / TIDAK ADA
+        # ==================================================
+
         else:
-            # jika dewa mati/tidak ada di tim
-            if hasattr(self, 'bersama_dewa') or not self.sudah_depresi:
-                print(f"[*] !!! {self.nama.upper()} DEPRESI !!! {self.nama} kehilangan semangat bertarung...")
 
-                # kurangi bonus kalau tadi bertarung bersama dewa
-                if hasattr(self, 'bersama_dewa'):
-                    self.atk -= self.bonus_serangan
-                    delattr(self, 'bersama_dewa')
+            # Kalau sebelumnya masih bersama Dewa,
+            # lepaskan bonus +10 ATK.
+            if self.bersama_dewa:
+                self.atk -= self.bonus_serangan
+                self.bersama_dewa = False
 
-                # matikan mode ngamuk jika sedang aktif
-                if self.mode_ngamuk:
-                    self.atk /= 2
-                    self.mode_ngamuk = False
+            # Matikan mode ngamuk jika masih aktif.
+            if self.mode_ngamuk:
+                self.atk //= 2
+                self.mode_ngamuk = False
 
-                # berikan debuff parah ke mikasa (hanya sekali)
-                if not self.sudah_depresi:
-                    self.atk /= 2
-                    self.sudah_depresi = True # mengunci debuff biar gak infinite loop 
+            # Terapkan depresi hanya sekali.
+            if not self.sudah_depresi:
+                self.atk //= 2
+                self.sudah_depresi = True
 
-        # Karena ini pasif, kita return True 
-        # supaya sistem tahu "skill pasif" sudah diproses
-        return True
+                return {
+                    "berhasil": True,
+                    "efek": "depresi",
+                    "karakter": self.nama,
+                    "log": (
+                        f"{self.nama} mengalami depresi "
+                        f"karena Dewa telah gugur."
+                    )
+                }
+
+        return {
+            "berhasil": False,
+            "efek": None,
+            "karakter": self.nama
+        }
+
+    def setup_statistik_awal(self):
+        super().setup_statistik_awal()
+
+        self.mode_ngamuk = False
+        self.sudah_depresi = False
+        self.bersama_dewa = False
 
 
 class Monster(Dasar_Karakter):
     def __init__(self, nama, hp):
-        self.nama = nama
-        self.hp = hp
-        self.daftar_atk = [40,15,17,13]
-        self.index_serangan = 0 # pengarah balasan damage yang diberikan monster
-       
+        super().__init__(nama, hp, 0)
+
+        self.daftar_atk = [40, 15, 17, 13]
+        self.index_serangan = 0
 
     def menyerang(self, target):
-        if self.hp > 0:
-            # serangan yang mau di kasih monster di arahin pakai index_serangan
-            serangan_sekarang = self.daftar_atk[self.index_serangan]
+        """
+        Monster menyerang target menggunakan pola
+        damage yang sudah ditentukan.
+        """
 
-            target.menerima_serangan(serangan_sekarang)
+        if self.hp <= 0:
+            return {
+                "berhasil": False,
+                "log": f"{self.nama} sudah kalah."
+            }
 
-            print(st.monster_menyerang.format(
-                monster = self.nama, 
-                damage = serangan_sekarang,
-                target = target.nama
-            ))        
+        damage = self.daftar_atk[self.index_serangan]
 
-            # index di tambah buat nuntun monster lanjut ke serangan berikutnya
-            self.index_serangan += 1
+        hasil = target.menerima_serangan(damage)
 
-            if self.index_serangan >= len(self.daftar_atk):
-                self.index_serangan = 0
+        self.index_serangan += 1
 
-        else:            
-            print(f'{self.nama} sudah kalah dan tidak bisa menyerang.')
+        if self.index_serangan >= len(self.daftar_atk):
+            self.index_serangan = 0
+
+        return {
+            "berhasil": True,
+            "monster": self.nama,
+            "target": target.nama,
+            "damage": damage,
+            "hasil_serangan": hasil
+        }
+
+    def setup_statistik_awal(self):
+        self.hp = self.max_hp
+        self.index_serangan = 0
 
 
-# setelah permainan berakhir, pakai fungsi ini buat riset
-def reset_entitas():
-    for hero in pilihan_karakter.values():
-        hero.hp = hero.max_hp
-
-    monster_obj.hp = monster_obj.max_hp
-
-# menginisialisasi nama karakter
-elsa = Elsa('Elsa', 75, 5)
-bruno = Bruno('Bruno', 150, 9)
-dewa = Dewa('Dewa', 85, 15)
-joy = Joy('Joy', 90, 10)
-mikasa = Mikasa('Mikasa', 90, 10)
+elsa = Elsa("Elsa", 75, 5)
+bruno = Bruno("Bruno", 150, 9)
+dewa = Dewa("Dewa", 85, 15)
+joy = Joy("Joy", 90, 10)
+mikasa = Mikasa("Mikasa", 90, 10)
 
 attribute_karakter = {
-    'elsa': elsa,
-    'bruno': bruno,
-    'dewa': dewa,
-    'joy': joy,
-    'mikasa': mikasa
+    "elsa": elsa,
+    "bruno": bruno,
+    "dewa": dewa,
+    "joy": joy,
+    "mikasa": mikasa
 }
