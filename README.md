@@ -153,7 +153,7 @@ Game engine tetap bertanggung jawab terhadap aturan dan state permainan sehingga
 | **Dewa**   | Critical DPS     | Dapat memberikan serangan kritikal secara berkala berdasarkan sistem cooldown.                                                     |
 | **Bruno**  | Tank             | Menggunakan *Guard Mode* untuk menepis damage monster.                                                                             |
 | **Joy**    | Support / Healer | Memberikan tambahan HP kepada anggota tim, termasuk HP yang dapat melewati batas maksimum normal.                                  |
-| **Mikasa** | Assasin        | Mendapatkan buff ketika bersama Dewa, memasuki kondisi *rage* ketika Dewa sekarat, dan mengalami *depression* ketika Dewa tumbang. |
+| **Mikasa** | Assasin          | Mendapatkan buff ketika bersama Dewa, memasuki kondisi *rage* ketika Dewa sekarat, dan mengalami *depression* ketika Dewa tumbang. |
 
 ---
 
@@ -231,16 +231,16 @@ Beberapa area yang sedang dikembangkan meliputi:
 
 * [x] Core game engine
 * [x] Character system
-* [ ] Turn-based battle system
-* [x] Cooldown system
-* [x] Linked List untuk game state
-* [ ] Web interface
-* [ ] Integrasi game engine dengan Flask
-* [ ] Interactive battle UI
+* [x] Turn-based battle system
+* [ ] Cooldown system
+* [ ] Linked List untuk game state
+* [x] Web interface
+* [x] Integrasi game engine dengan Flask
+* [x] Interactive battle UI
 * [ ] Improved visual presentation
-* [ ] Persistent game state
+* [x] Persistent game state
 * [ ] Deployment ke public web server
-* [ ] playable
+* [ ] game is playable
 
 ---
 
