@@ -21,3 +21,31 @@ function tampilkanMenuKarakter(tim) {
         aksiKarakter.appendChild(button);
     });
 }
+
+
+function pilihkarakter(namaKarakter) {
+    fetch('/aksi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            aksi: 'pilih_karakter',
+            karakter: namaKarakter
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        const pesanPemain =
+            document.getElementById('pesan-pemain');
+
+        if (pesanPemain) {
+            pesanPemain.innerText = data.log;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
