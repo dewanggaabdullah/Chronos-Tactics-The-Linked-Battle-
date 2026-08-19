@@ -57,15 +57,44 @@ function kembaliKeMenuUtama() {
 }
 
 
-function pilihKarakter(nama) {
+function aturKarakterTurn(namaKarakter) {
     fetch('/aksi', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            aksi: 'pilih_karakter',
-            karakter: nama
+            aksi: 'atur_karakter_turn',
+            karakter: namaKarakter
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        if (!data.berhasil) {
+            return;
+        }
+
+        console.log(
+            `${data.karakter} siap bertindak.`
+        );
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+function tambahAnggotaTim(namaKarakter) {
+    fetch('/aksi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            aksi: 'tambah_anggota',
+            karakter: namaKarakter
         })
     })
     .then(response => response.json())
@@ -77,7 +106,7 @@ function pilihKarakter(nama) {
 
         if (pesanPemain) {
             pesanPemain.innerText = data.log;
-        }
+        }   
     })
     .catch(error => {
         console.error('Error:', error);

@@ -2,13 +2,16 @@ from flow import attributes as un
 import copy
 
 
-KARAKTER_VALID = [
-    "elsa",
-    "bruno",
-    "dewa",
-    "joy",
-    "mikasa"
-]
+def validasi_karakter(nama_karakter):
+    """
+    Memvalidasi satu nama karakter.
+
+    Mengembalikan True jika karakter tersedia.
+    """
+
+    nama_karakter = str(nama_karakter).lower()
+
+    return nama_karakter in un.attribute_karakter
 
 
 def pemilihan_karakter(*nama_karakter):
@@ -33,18 +36,6 @@ def pemilihan_karakter(*nama_karakter):
     return tim_pemain
 
 
-def validasi_karakter(nama_karakter):
-    """
-    Memvalidasi satu nama karakter.
-
-    Mengembalikan True jika karakter tersedia.
-    """
-
-    nama_karakter = str(nama_karakter).lower()
-
-    return nama_karakter in KARAKTER_VALID
-
-
 def tambah_karakter_ke_tim(nama_karakter, tim_pemain):
     nama_karakter = str(nama_karakter).lower()
 
@@ -67,4 +58,29 @@ def tambah_karakter_ke_tim(nama_karakter, tim_pemain):
     return {
         "berhasil": True,
         "pesan": f"{nama_karakter} berhasil ditambahkan."
+    }
+
+
+def atur_karakter_turn(nama_karakter, game_state):
+    """
+    Menentukan karakter yang akan bertindak pada turn saat ini.
+    """
+
+    nama_karakter = str(nama_karakter).lower()
+
+    if nama_karakter not in game_state["tim_pemain"]:
+        return {
+            "berhasil": False,
+            "log": "Karakter tidak ada di dalam tim."
+        }
+
+    karakter = game_state["tim_pemain"][nama_karakter]
+
+    # Simpan karakter yang sedang mendapat giliran
+    game_state["karakter_aktif"] = nama_karakter
+
+    return {
+        "berhasil": True,
+        "karakter": nama_karakter,
+        "log": f"{nama_karakter.capitalize()} dipilih."
     }
