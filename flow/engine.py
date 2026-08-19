@@ -1,5 +1,5 @@
-from flow import attributes as un
-from flow import characters as cc
+from flow import attributes as at
+from flow import characters as ch
 from flow.history import node as no
 import copy
 
@@ -12,17 +12,65 @@ game_state = {
 }
 
 
+def pilih_karakter(nama_karakter):
+    global game_state
+
+    if not game_state["game_active"]:
+        return {
+            "berhasil": False,
+            "log": "Game belum dimulai."
+        }
+
+    nama_karakter = str(nama_karakter).lower()
+
+    if not ch.validasi_karakter(nama_karakter):
+        return {
+            "berhasil": False,
+            "log": "Karakter tidak valid."
+        }
+
+    tim_pemain = game_state["tim_pemain"]
+
+    if nama_karakter in tim_pemain:
+        return {
+            "berhasil": False,
+            "log": "Karakter sudah dipilih."
+        }
+
+    if len(tim_pemain) >= 3:
+        return {
+            "berhasil": False,
+            "log": "Tim sudah penuh. Maksimal 3 karakter."
+        }
+
+    karakter = ch.pemilihan_karakter(
+        nama_karakter
+    )
+
+    tim_pemain.update(karakter)
+
+    return {
+        "berhasil": True,
+        "log": f"{nama_karakter.capitalize()} berhasil dipilih.",
+        "karakter": nama_karakter,
+        "jumlah_tim": len(tim_pemain)
+    }
+
+
 def inisialisasi_game():
     global game_state
     
     # tim pemain masih dummy, karna masih tahap development(nanti dihapus)
     # Tim pemain akan diisi melalui pemilihan karakter di web.
-    game_state["tim_pemain"] = {} # cc.pemilihan_karakter(*daftar_karakter)
-    game_state["monster"] = un.Monster('ORC GURUN', 250)
+    game_state["tim_pemain"] = {} # ch.pemilihan_karakter(*daftar_karakter)
+    game_state["monster"] = at.Monster('ORC GURUN', 250)
     game_state["history"] = no.TurnHistory()
     game_state["nomor_turn"] = 1
     game_state["game_active"] = True
     
+    # Karakter yang sedang mendapat giliran
+    game_state["karakter_aktif"] = None
+
     # Setup statistik awal
     for karakter in game_state["tim_pemain"].values():
         if hasattr(karakter, 'setup_statistik_awal'):
