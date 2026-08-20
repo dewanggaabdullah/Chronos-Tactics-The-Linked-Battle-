@@ -1,17 +1,16 @@
-# cache
+# Python cache (otomatis mencakup seluruh subfolder)
 __pycache__/
-main_menu/__pycache__
-flow/__pycache__
-flow/node.py
-__pycache__/
-*.pyc
+*.py[cod]
 
-# virtual environment
+# Virtual environment
 venv/
+.venv/
+env/
 
-# vs code
+# Environment variables & editor
+.env
 .vscode/
-.vscode
+.idea/
 
 # local
 zkode_lama/
