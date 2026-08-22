@@ -4,25 +4,6 @@ function bukaGameMenu() {
 }
 
 
-function tampilkanMenuKarakter(tim) {
-    const aksiKarakter = document.getElementById('aksi-karakter');
-
-    aksiKarakter.innerHTML = '';
-
-    tim.forEach(nama => {
-        const button = document.createElement('button');
-
-        button.innerText = `Serang dengan ${nama}`;
-
-        button.onclick = function () {
-            kirimAksi(nama);
-        };
-
-        aksiKarakter.appendChild(button);
-    });
-}
-
-
 function pilihkarakter(namaKarakter) {
     fetch('/aksi', {
         method: 'POST',
@@ -74,10 +55,9 @@ function siapBertarung() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("DATA DARI SERVER:", data);
         tampilkanPesan(data.log);
     })
     .catch(error => {
-        console.error("ERROR:", error);
+        console.error("Error:", error);
     });
 }

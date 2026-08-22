@@ -12,12 +12,19 @@ function mulaiGame() {
     .then(data => {
         console.log(data);
 
-        const prolog = document.getElementById('prolog');
-        const teksProlog = document.getElementById('teks-prolog');
-        const menuUtama = document.getElementById('menu-utama');
+        const prolog =
+            document.getElementById('prolog');
+
+        const teksProlog =
+            document.getElementById('teks-prolog');
+
+        const menuUtama =
+            document.getElementById('menu-utama');
 
         if (!prolog || !teksProlog || !menuUtama) {
-            console.error('Elemen HTML tidak ditemukan.');
+            console.error(
+                'Elemen HTML tidak ditemukan.'
+            );
             return;
         }
 
@@ -33,7 +40,9 @@ function mulaiGame() {
             ${data.prolog.karakter
                 .map(karakter => `
                     <div class="karakter">
-                        <p>${karakter.replace(/\n/g, '<br>')}</p>
+                        <p>
+                            ${karakter.replace(/\n/g, '<br>')}
+                        </p>
                     </div>
                 `)
                 .join('')}
@@ -41,72 +50,10 @@ function mulaiGame() {
 
         menuUtama.classList.add('hidden');
         prolog.classList.remove('hidden');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
 
-
-function kembaliKeMenuUtama() {
-    const prolog = document.getElementById('prolog');
-    const menuUtama = document.getElementById('menu-utama');
-
-    prolog.classList.add('hidden');
-    menuUtama.classList.remove('hidden');
-}
-
-
-function aturKarakterTurn(namaKarakter) {
-    fetch('/aksi', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            aksi: 'atur_karakter_turn',
-            karakter: namaKarakter
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-
-        if (!data.berhasil) {
-            return;
-        }
-
-        console.log(
-            `${data.karakter} siap bertindak.`
+        tampilkanPesan(
+            'Pilih 3 karakter untuk membentuk tim.'
         );
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-
-function tambahAnggotaTim(namaKarakter) {
-    fetch('/aksi', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            aksi: 'tambah_anggota',
-            karakter: namaKarakter
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-
-        const pesanPemain =
-            document.getElementById('pesan-pemain');
-
-        if (pesanPemain) {
-            pesanPemain.innerText = data.log;
-        }   
     })
     .catch(error => {
         console.error('Error:', error);

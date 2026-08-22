@@ -1,5 +1,5 @@
 /* ============================================================
-GLOBAL
+   GLOBAL
 ============================================================ */
 
 * {
@@ -21,19 +21,18 @@ body {
 
 
 /* ============================================================
-CONTAINER
+   LAYOUT
 ============================================================ */
 
 .container {
     width: 90%;
     max-width: 700px;
-
     text-align: center;
 }
 
 
 /* ============================================================
-JUDUL
+   TYPOGRAPHY
 ============================================================ */
 
 h1 {
@@ -42,7 +41,7 @@ h1 {
 
 
 /* ============================================================
-PESAN PEMAIN
+   PLAYER MESSAGE
 ============================================================ */
 
 #pesan-pemain {
@@ -54,7 +53,21 @@ PESAN PEMAIN
 
 
 /* ============================================================
-PROLOG
+   MENU
+============================================================ */
+
+#menu-utama,
+#menu-game,
+#menu-settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* ============================================================
+   PROLOG
 ============================================================ */
 
 #prolog {
@@ -62,6 +75,11 @@ PROLOG
     white-space: pre-wrap;
     line-height: 1.6;
 }
+
+
+/* ============================================================
+   CHARACTER DESCRIPTION
+============================================================ */
 
 .karakter {
     border-top: 1px solid #555;
@@ -76,21 +94,39 @@ PROLOG
 
 
 /* ============================================================
-MENU
+   CHARACTER SELECTION
 ============================================================ */
 
-#menu-utama,
-#menu-game,
-#menu-settings {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+#pilihan-karakter {
+    display: grid;
+    grid-template-columns: repeat(2, 180px);
+    justify-content: center;
+
+    gap: 12px;
+    margin-top: 30px;
+}
+
+#pilihan-karakter button {
+    width: 180px;
+    padding: 12px 15px;
+
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#pilihan-karakter button:hover {
+    transform: scale(1.03);
+}
+
+.karakter-dipilih {
+    box-shadow: 0 0 15px gold;
+    transform: scale(1.05);
 }
 
 
 /* ============================================================
-BUTTON
+   BUTTON
 ============================================================ */
 
 button {
@@ -103,42 +139,9 @@ button {
 
 
 /* ============================================================
-UTILITAS
+   UTILITIES
 ============================================================ */
 
 .hidden {
     display: none !important;
-}
-
-
-/* ============================================================
-   PILIHAN KARAKTER
-============================================================ */
-
-#pilihan-karakter {
-    display: grid;
-    grid-template-columns: repeat(2, 180px);
-    justify-content: center;
-    gap: 12px;
-    margin-top: 30px;
-}
-
-#pilihan-karakter button {
-    width: 180px;
-    padding: 12px 15px;
-
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-#pilihan-karakter button:hover {
-    transform: scale(1.03);
-}
-
-.karakter-dipilih {
-    box-shadow: 0 0 15px gold;
-    transform: scale(1.05);
 }

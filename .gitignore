@@ -11,6 +11,3 @@ env/
 .env
 .vscode/
 .idea/
-
-# local
-zkode_lama/
