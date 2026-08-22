@@ -58,6 +58,12 @@ def handle_aksi():
         return jsonify(hasil)
 
 
+    if aksi_user == 'siap':
+        return jsonify(
+            en.siap_bertarung()
+        )
+
+
     # =========================
     # TURN KARAKTER
     # =========================

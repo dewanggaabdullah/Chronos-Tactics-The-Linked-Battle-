@@ -36,16 +36,48 @@ function pilihkarakter(namaKarakter) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
 
-        const pesanPemain =
-            document.getElementById('pesan-pemain');
+        tampilkanPesan(data.log);
 
-        if (pesanPemain) {
-            pesanPemain.innerText = data.log;
+        const tombol = document.querySelector(
+            `[data-karakter="${namaKarakter}"]`
+        );
+
+        if (!tombol) {
+            return;
         }
+
+        if (data.berhasil && data.dipilih) {
+            tombol.classList.add('karakter-dipilih');
+        }
+
+        if (data.berhasil && !data.dipilih) {
+            tombol.classList.remove('karakter-dipilih');
+        }
+
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error("Error:", error);
+    });
+}
+
+
+function siapBertarung() {
+    fetch('/aksi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            aksi: 'siap'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("DATA DARI SERVER:", data);
+        tampilkanPesan(data.log);
+    })
+    .catch(error => {
+        console.error("ERROR:", error);
     });
 }

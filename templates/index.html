@@ -19,8 +19,6 @@
 
         <h1>CRONOS TACTICS: The Linked Battle</h1>
 
-        <div id="pesan-pemain"></div>
-
         <!-- ==================================================
              MENU UTAMA
         =================================================== -->
@@ -49,23 +47,38 @@
 
             <div id="pilihan-karakter">
 
-                <button onclick="pilihkarakter('elsa')">
+                <button
+                    class="tombol-karakter"
+                    data-karakter="elsa"
+                    onclick="pilihkarakter('elsa')">
                     Elsa
                 </button>
 
-                <button onclick="pilihkarakter('bruno')">
+                <button
+                    class="tombol-karakter"
+                    data-karakter="bruno"
+                    onclick="pilihkarakter('bruno')">
                     Bruno
                 </button>
 
-                <button onclick="pilihkarakter('dewa')">
+                <button
+                    class="tombol-karakter"
+                    data-karakter="dewa"
+                    onclick="pilihkarakter('dewa')">
                     Dewa
                 </button>
 
-                <button onclick="pilihkarakter('joy')">
+                <button
+                    class="tombol-karakter"
+                    data-karakter="joy"
+                    onclick="pilihkarakter('joy')">
                     Joy
                 </button>
 
-                <button onclick="pilihkarakter('mikasa')">
+                <button
+                    class="tombol-karakter"
+                    data-karakter="mikasa"
+                    onclick="pilihkarakter('mikasa')">
                     Mikasa
                 </button>
 
@@ -73,11 +86,32 @@
 
             <div id="navigasi-prolog">
 
+                <button onclick="siapBertarung()">
+                    Siap
+                </button>
+
                 <button onclick="kembaliKeMenuUtama()">
                     Kembali
                 </button>
 
             </div>
+
+            <div id="pesan-pemain"></div>
+
+
+        </section>
+
+        <!-- ==================================================
+             PERTARUNGAN
+        ================================================== -->
+
+        <section id="menu-game" class="hidden">
+
+            <h2>Pertarungan</h2>
+
+            <p id="status-pertarungan">
+                Game masih dalam tahap development.
+            </p>
 
         </section>
 
@@ -128,6 +162,7 @@
          JAVASCRIPT
     ======================================================= -->
 
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main_menu.js') }}"></script>
     <script src="{{ url_for('static', filename='js/game_menu.js') }}"></script>
     <script src="{{ url_for('static', filename='js/settings_menu.js') }}"></script>

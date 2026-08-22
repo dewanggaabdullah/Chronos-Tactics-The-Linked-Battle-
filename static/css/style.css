@@ -127,13 +127,18 @@ UTILITAS
     width: 180px;
     padding: 12px 15px;
 
-    transform: skew(-8deg);
-
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+
+    transition: 0.2s;
 }
 
 #pilihan-karakter button:hover {
-    transform: skew(-8deg) scale(1.03);
+    transform: scale(1.03);
+}
+
+.karakter-dipilih {
+    box-shadow: 0 0 15px gold;
+    transform: scale(1.05);
 }
