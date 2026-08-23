@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, jsonify
-
-from core import engine as en
-
+from flow import engine as en
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():

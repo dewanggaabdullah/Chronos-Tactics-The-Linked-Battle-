@@ -1,19 +1,20 @@
-from flow import attributes as at
-from flow import characters as ch
-from flow.history import node as no
-
-
-game_state = {
-    "tim_pemain": {},
-    "monster": None,
-    "history": None,
-    "nomor_turn": 0,
-    "game_active": False,
-    "karakter_aktif": None
-}
+from components import story as st
+from flow import game_menu
 
 
 def mulai_game(data=None):
+    game_menu.mulai_game()
+
+    return {
+        "menu": "game",
+        "prolog": st.ambil_prolog(),
+        "hp_monster": game_menu.game_state["monster"].hp,
+        "turn": game_menu.game_state["nomor_turn"]
+    }
+
+
+def mulai_game(data=None):
+    game
     game_state["tim_pemain"] = {}
     game_state["monster"] = at.Monster(
         "ORC GURUN",
@@ -85,7 +86,7 @@ def pilih_karakter(data):
     }
 
 
-def siap_bertarung(data=None):
+def siap_bertarung():
     tim_pemain = game_state["tim_pemain"]
 
     if len(tim_pemain) != 3:
@@ -98,62 +99,4 @@ def siap_bertarung(data=None):
         "berhasil": True,
         "log": "Tim siap bertarung.",
         "status": "Game masih dalam tahap development."
-    }
-
-
-def atur_karakter_turn(data):
-    nama_karakter = str(
-        data.get("karakter", "")
-    ).lower()
-
-    if nama_karakter not in game_state["tim_pemain"]:
-        return {
-            "berhasil": False,
-            "log": "Karakter tidak ditemukan."
-        }
-
-    game_state["karakter_aktif"] = nama_karakter
-
-    return {
-        "berhasil": True,
-        "karakter": nama_karakter,
-        "log": f"{nama_karakter.capitalize()} siap bertindak."
-    }
-
-
-def serang(data):
-    nama_karakter = str(
-        data.get("karakter", "")
-    ).lower()
-
-    return {
-        "berhasil": True,
-        "log": f"{nama_karakter.capitalize()} menyerang."
-    }
-
-
-def gunakan_skill(data):
-    nama_karakter = str(
-        data.get("karakter", "")
-    ).lower()
-
-    nama_skill = str(
-        data.get("skill", "")
-    ).lower()
-
-    return {
-        "berhasil": True,
-        "log": (
-            f"{nama_karakter.capitalize()} "
-            f"menggunakan {nama_skill}."
-        )
-    }
-
-
-def kabur(data=None):
-    game_state["game_active"] = False
-
-    return {
-        "berhasil": True,
-        "log": "Kamu melarikan diri!"
     }

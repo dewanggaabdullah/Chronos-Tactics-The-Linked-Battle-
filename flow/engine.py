@@ -1,13 +1,13 @@
-from menu import main_menu
-from menu import game_menu
-from menu import settings_menu
+from flow import menu
+from flow import game_menu
+from flow import settings_menu
 
 
 ACTION_HANDLERS = {
-    "mulai": main_menu.mulai_game,
+    "mulai": menu.mulai_game,
 
     "pilih_karakter": game_menu.pilih_karakter,
-    "siap": game_menu.siap_bertarung,
+    "siap": menu.siap_bertarung,
     "atur_karakter_turn": game_menu.atur_karakter_turn,
 
     "serang": game_menu.serang,
