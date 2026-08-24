@@ -6,7 +6,7 @@ from flow import settings_menu
 ACTION_HANDLERS = {
     "mulai": menu.mulai_game,
 
-    "pilih_karakter": game_menu.pilih_karakter,
+    "pilih_karakter": menu.pilih_karakter,
     "siap": menu.siap_bertarung,
     "atur_karakter_turn": game_menu.atur_karakter_turn,
 

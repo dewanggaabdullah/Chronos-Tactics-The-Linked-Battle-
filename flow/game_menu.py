@@ -1,5 +1,4 @@
 from components import attributes as at
-from components import characters as ch
 from components.history import node as no
 
 
@@ -13,57 +12,20 @@ game_state = {
 }
 
 
-def pilih_karakter(data):
-    nama_karakter = str(
-        data.get("karakter", "")
-    ).lower()
-
-    if not game_state["game_active"]:
-        return {
-            "berhasil": False,
-            "log": "Game belum dimulai."
-        }
-
-    if not ch.validasi_karakter(nama_karakter):
-        return {
-            "berhasil": False,
-            "log": "Karakter tidak valid."
-        }
-
-    tim_pemain = game_state["tim_pemain"]
-
-    if nama_karakter in tim_pemain:
-        del tim_pemain[nama_karakter]
-
-        return {
-            "berhasil": True,
-            "dipilih": False,
-            "log": f"{nama_karakter.capitalize()} dibatalkan.",
-            "karakter": nama_karakter,
-            "jumlah_tim": len(tim_pemain)
-        }
-
-    if len(tim_pemain) >= 3:
-        return {
-            "berhasil": False,
-            "dipilih": False,
-            "log": "Tim sudah penuh. Maksimal 3 karakter.",
-            "karakter": nama_karakter,
-            "jumlah_tim": len(tim_pemain)
-        }
-
-    karakter = ch.pemilihan_karakter(
-        nama_karakter
+def mulai_battle(tim_pemain):
+    game_state["tim_pemain"] = tim_pemain
+    game_state["monster"] = at.Monster(
+        "ORC GURUN",
+        250
     )
-
-    tim_pemain.update(karakter)
+    game_state["history"] = no.TurnHistory()
+    game_state["nomor_turn"] = 1
+    game_state["game_active"] = True
+    game_state["karakter_aktif"] = None
 
     return {
-        "berhasil": True,
-        "dipilih": True,
-        "log": f"{nama_karakter.capitalize()} berhasil dipilih.",
-        "karakter": nama_karakter,
-        "jumlah_tim": len(tim_pemain)
+        "hp_monster": game_state["monster"].hp,
+        "turn": game_state["nomor_turn"]
     }
 
 
