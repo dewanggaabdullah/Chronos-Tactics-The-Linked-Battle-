@@ -1,5 +1,10 @@
-function bukaGameMenu() {
+function bukaMenuPertarungan() {
     document.getElementById('prolog').classList.add('hidden');
+    document.getElementById('menu-utama').classList.add('hidden');
+    document.getElementById('menu-settings').classList.add('hidden');
+
+    document.getElementById('judul-game').classList.add('hidden');
+
     document.getElementById('menu-game').classList.remove('hidden');
 }
 
@@ -55,9 +60,20 @@ function siapBertarung() {
     })
     .then(response => response.json())
     .then(data => {
+        console.log("DATA DARI SERVER:", data);
+
         tampilkanPesan(data.log);
+
+        if (!data.berhasil) {
+            console.log("Battle tidak dibuka:", data.log);
+            return;
+        }
+
+        console.log("Battle dibuka!");
+
+        bukaMenuPertarungan();
     })
     .catch(error => {
-        console.error("Error:", error);
+        console.error("ERROR:", error);
     });
 }
