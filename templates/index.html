@@ -100,20 +100,62 @@
 
         <section id="menu-game" class="hidden">
 
-            <h2>Pertarungan</h2>
+            <h2>PERTARUNGAN</h2>
 
-            <p id="status-pertarungan">
-                Game masih dalam tahap development.
-            </p>
+            <div id="status-monster">
 
-            <div id="aksi-karakter"></div>
+                <h3>ORC GURUN</h3>
+
+                <p>
+                    HP:
+                    <span id="hp-monster">250</span>
+                    /
+                    <span id="max-hp-monster">250</span>
+                </p>
+
+            </div>
+
+
+            <div id="status-karakter">
+
+                <h3>Karakter aktif:</h3>
+
+                <p id="karakter-aktif">
+                    Belum dipilih
+                </p>
+
+            </div>
+
+
+            <div id="tim-pemain">
+
+                <h3>Tim:</h3>
+
+                <div id="daftar-tim"></div>
+
+            </div>
+
+
+            <div id="aksi-karakter">
+
+                <h3>Aksi:</h3>
+
+                <button>
+                    Serang
+                </button>
+
+                <button>
+                    Skill
+                </button>
+
+            </div>
+
+
+            <hr>
+
 
             <button onclick="kirimAksi('kabur')">
                 Kabur
-            </button>
-
-            <button onclick="kembaliKeMenuUtama()">
-                Kembali
             </button>
 
         </section>
