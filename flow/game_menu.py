@@ -25,6 +25,7 @@ def mulai_battle(tim_pemain):
 
     return {
         "hp_monster": game_state["monster"].hp,
+        "tim_pemain": list(game_state["tim_pemain"].keys()),
         "turn": game_state["nomor_turn"]
     }
 

@@ -1,11 +1,15 @@
-function bukaMenuPertarungan() {
+function bukaMenuPertarungan(data.battle) {
     document.getElementById('prolog').classList.add('hidden');
     document.getElementById('menu-utama').classList.add('hidden');
     document.getElementById('menu-settings').classList.add('hidden');
-
     document.getElementById('judul-game').classList.add('hidden');
 
     document.getElementById('menu-game').classList.remove('hidden');
+
+    document.getElementById('hp-monster').innerText =
+        battle.hp_monster;
+
+    tampilkanTim(battle.tim_pemain);
 }
 
 
