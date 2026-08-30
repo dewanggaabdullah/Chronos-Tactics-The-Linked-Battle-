@@ -1,4 +1,4 @@
-function bukaMenuPertarungan(data.battle) {
+function bukaMenuPertarungan(battle) {
     document.getElementById('prolog').classList.add('hidden');
     document.getElementById('menu-utama').classList.add('hidden');
     document.getElementById('menu-settings').classList.add('hidden');
@@ -10,6 +10,25 @@ function bukaMenuPertarungan(data.battle) {
         battle.hp_monster;
 
     tampilkanTim(battle.tim_pemain);
+}
+
+
+function tampilkanTim(tim) {
+    const daftarTim =
+        document.getElementById('daftar-tim');
+
+    daftarTim.innerHTML = '';
+
+    tim.forEach(namaKarakter => {
+
+        const tombol = document.createElement('button');
+
+        tombol.innerText =
+            namaKarakter.charAt(0).toUpperCase()
+            + namaKarakter.slice(1);
+
+        daftarTim.appendChild(tombol);
+    });
 }
 
 
@@ -75,7 +94,7 @@ function siapBertarung() {
 
         console.log("Battle dibuka!");
 
-        bukaMenuPertarungan();
+        bukaMenuPertarungan(data.battle);
     })
     .catch(error => {
         console.error("ERROR:", error);
