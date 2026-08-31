@@ -27,6 +27,10 @@ function tampilkanTim(tim) {
             namaKarakter.charAt(0).toUpperCase()
             + namaKarakter.slice(1);
 
+        tombol.onclick = function() {
+            pilihKarakterAktif(namaKarakter);
+        };
+
         daftarTim.appendChild(tombol);
     });
 }
@@ -71,6 +75,44 @@ function pilihkarakter(namaKarakter) {
 }
 
 
+function pilihKarakterAktif(namaKarakter) {
+    fetch('/aksi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            aksi: 'atur_karakter_turn',
+            karakter: namaKarakter
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        console.log(
+            "KARAKTER AKTIF:",
+            data
+        );
+
+        tampilkanPesan(data.log);
+
+        if (!data.berhasil) {
+            return;
+        }
+
+        document.getElementById(
+            'karakter-aktif'
+        ).innerText =
+            data.karakter.charAt(0).toUpperCase()
+            + data.karakter.slice(1);
+
+    })
+    .catch(error => {
+        console.error("ERROR:", error);
+    });
+}
+
+
 function siapBertarung() {
     fetch('/aksi', {
         method: 'POST',
@@ -95,6 +137,36 @@ function siapBertarung() {
         console.log("Battle dibuka!");
 
         bukaMenuPertarungan(data.battle);
+    })
+    .catch(error => {
+        console.error("ERROR:", error);
+    });
+}
+
+
+function kirimAksi(aksi) {
+    fetch('/aksi', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            aksi: aksi
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("DATA AKSI:", data);
+
+        tampilkanPesan(data.log);
+
+        if (!data.berhasil) {
+            return;
+        }
+
+        if (aksi === 'kabur') {
+            kembaliKeMenuUtama();
+        }
     })
     .catch(error => {
         console.error("ERROR:", error);

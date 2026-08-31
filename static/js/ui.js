@@ -4,6 +4,9 @@ function kembaliKeMenuUtama() {
     document.getElementById('menu-game').classList.add('hidden');
     document.getElementById('prolog').classList.add('hidden');
 
+    // Tampilkan kembali judul game
+    document.getElementById('judul-game').classList.remove('hidden');
+
     // Tampilkan menu utama
     document.getElementById('menu-utama').classList.remove('hidden');
 
