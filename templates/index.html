@@ -3,11 +3,18 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
+        href="{{ url_for(
+            'static',
+            filename='css/style.css'
+        ) }}"
     >
 </head>
 
@@ -15,188 +22,52 @@
 
     <main class="container">
 
-         <h1 id="judul-game">
+        <h1 id="judul-game">
             CRONOS TACTICS: The Linked Battle
-         </h1>
+        </h1>
 
-        <section id="menu-utama">
+        {% include 'views/main_menu.html' %}
 
-            <button onclick="mulaiGame()">
-                Mulai Game
-            </button>
+        {% include 'views/prolog.html' %}
 
-            <button onclick="bukaSettings()">
-                Settings
-            </button>
+        {% include 'views/battle.html' %}
 
-        </section>
-
-
-        <!-- ==================================================
-             PROLOG + PEMILIHAN KARAKTER
-        ================================================== -->
-
-        <section id="prolog" class="hidden">
-
-            <div id="teks-prolog"></div>
-
-            <div id="pilihan-karakter">
-
-                <button
-                    class="tombol-karakter"
-                    data-karakter="elsa"
-                    onclick="pilihkarakter('elsa')">
-                    Elsa
-                </button>
-
-                <button
-                    class="tombol-karakter"
-                    data-karakter="bruno"
-                    onclick="pilihkarakter('bruno')">
-                    Bruno
-                </button>
-
-                <button
-                    class="tombol-karakter"
-                    data-karakter="dewa"
-                    onclick="pilihkarakter('dewa')">
-                    Dewa
-                </button>
-
-                <button
-                    class="tombol-karakter"
-                    data-karakter="joy"
-                    onclick="pilihkarakter('joy')">
-                    Joy
-                </button>
-
-                <button
-                    class="tombol-karakter"
-                    data-karakter="mikasa"
-                    onclick="pilihkarakter('mikasa')">
-                    Mikasa
-                </button>
-
-            </div>
-
-            <div id="navigasi-prolog">
-
-                <button onclick="siapBertarung()">
-                    Siap
-                </button>
-
-                <button onclick="kembaliKeMenuUtama()">
-                    Kembali
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================================================
-             PERTARUNGAN
-        ================================================== -->
-
-        <section id="menu-game" class="hidden">
-
-            <h2>PERTARUNGAN</h2>
-
-            <div id="status-monster">
-
-                <h3>ORC GURUN</h3>
-
-                <p>
-                    HP:
-                    <span id="hp-monster">250</span>
-                    /
-                    <span id="max-hp-monster">250</span>
-                </p>
-
-            </div>
-
-
-            <div id="status-karakter">
-
-                <h3>Karakter aktif:</h3>
-
-                <p>
-                    Karakter aktif:
-                    <span id="karakter-aktif">
-                        Belum dipilih
-                    </span>
-                </p>
-
-            </div>
-
-
-            <div id="tim-pemain">
-
-                <h3>Tim:</h3>
-
-                <div id="daftar-tim"></div>
-
-            </div>
-
-
-            <div id="aksi-karakter">
-
-                <h3>Aksi:</h3>
-
-                <button>
-                    Serang
-                </button>
-
-                <button>
-                    Skill
-                </button>
-
-            </div>
-
-
-            <hr>
-
-
-            <button onclick="kirimAksi('kabur')">
-                Kabur
-            </button>
-
-        </section>
-
-
-        <!-- ==================================================
-             MENU SETTINGS
-        ================================================== -->
+        {% include 'views/settings.html' %}
 
         <div id="pesan-pemain"></div>
-
-        <section id="menu-settings" class="hidden">
-
-            <button onclick="pilihSubSettings('Audio')">
-                Audio
-            </button>
-
-            <button onclick="pilihSubSettings('Grafis')">
-                Grafis
-            </button>
-
-            <button onclick="kembaliKeMenuUtama()">
-                Kembali
-            </button>
-
-        </section>
 
     </main>
 
 
-    <!-- ======================================================
-         JAVASCRIPT
-    ======================================================= -->
+    <!-- JAVASCRIPT -->
 
-    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main_menu.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/game_menu.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/settings_menu.js') }}"></script>
+    <script
+        src="{{ url_for(
+            'static',
+            filename='js/ui.js'
+        ) }}"
+    ></script>
+
+    <script
+        src="{{ url_for(
+            'static',
+            filename='js/main_menu.js'
+        ) }}"
+    ></script>
+
+    <script
+        src="{{ url_for(
+            'static',
+            filename='js/game_menu.js'
+        ) }}"
+    ></script>
+
+    <script
+        src="{{ url_for(
+            'static',
+            filename='js/settings_menu.js'
+        ) }}"
+    ></script>
 
 </body>
 
